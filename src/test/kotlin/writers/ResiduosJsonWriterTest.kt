@@ -24,11 +24,11 @@ internal class ResiduosJsonWriterTest {
             )
         )
 
-        val writer = ResiduosJsonWriter("src/test/resources/residuos.json")
+        val writer = ResiduosJsonWriter("src/test/resources/written.json")
 
         writer.write(content)
 
-        val file = File("src/test/resources/residuos.json")
+        val file = File("src/test/resources/written.json")
         assert(file.exists())
         val residuo: List<Residuo> = Json.decodeFromString(file.readText())
         assert(residuo.count() == 1)
