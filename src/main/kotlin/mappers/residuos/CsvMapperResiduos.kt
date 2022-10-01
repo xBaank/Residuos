@@ -2,8 +2,6 @@ package mappers.residuos
 
 import exceptions.CsvException
 import extensions.*
-import mappers.InMapperCsv
-import mappers.OutMapperCsv
 import models.Residuo
 import java.time.LocalDate
 import java.time.Month
@@ -13,34 +11,37 @@ import java.util.*
  * maps all lines of the csv file to a Residuo lazy sequence
  */
 
-class CsvMapperResiduos : InMapperCsv, OutMapperCsv {
-    override fun mapTo(input: Sequence<String>): Sequence<Residuo> = input.drop(1).map { line ->
+class CsvMapperResiduos {
+    fun mapTo(input: Sequence<String>): Sequence<Residuo> = input.drop(1).map { line ->
         val (ano, mes, lote, residuo, distrito, nombreDistrito, toneladas) = line.split(';')
+
         val fecha = LocalDate.of(
             ano?.toIntOrNull() ?: throw CsvException("Año debe ser un numero"),
             mes?.parse() ?: throw CsvException("Mes debe estar en español"),
             1
         )
+
         Residuo(
-            fecha,
-            lote?.toIntOrNull()
+            fecha = fecha,
+
+            lote = lote?.toIntOrNull()
                 ?: throw CsvException("El lote no es un número"),
 
-            residuo?.ifBlank { throw CsvException("El residuo no puede estar vacio") }
+            residuo = residuo?.ifBlank { throw CsvException("El residuo no puede estar vacio") }
                 ?: throw CsvException("El residuo no puede ser nulo"),
 
-            distrito?.toIntOrNull()
+            distrito = distrito?.toIntOrNull()
                 ?: throw CsvException("El distrito no es un número"),
 
-            nombreDistrito?.ifBlank { throw CsvException("El nombre del distrito no puede estar vacío") }
+            nombreDistrito = nombreDistrito?.ifBlank { throw CsvException("El nombre del distrito no puede estar vacío") }
                 ?: throw CsvException("El nombre del distrito no puede ser null"),
 
-            toneladas?.replace(',', '.')?.toDoubleOrNull()
+            toneladas = toneladas?.replace(',', '.')?.toDoubleOrNull()
                 ?: throw CsvException("Las toneladas no son un número")
         )
     }
 
-    override fun mapFrom(input: Sequence<Residuo>): Sequence<String> = sequence {
+    fun mapFrom(input: Sequence<Residuo>): Sequence<String> = sequence {
         yield("Año;Mes;Lote;Residuo;Distrito;Nombre Distrito;Toneladas")
         yieldAll(input.map { residuos ->
             "${residuos.fecha.year};${residuos.fecha.month.parse()};${residuos.lote};${residuos.residuo};${residuos.distrito};${residuos.nombreDistrito};${
