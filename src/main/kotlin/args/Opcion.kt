@@ -2,11 +2,11 @@ package args
 
 import exceptions.ArgsException
 
-sealed interface OpcionConfig {
+sealed interface Opcion {
     val directorioOrigen: String
     val directorioDestino: String
 
-    class OpcionParser(params: Array<String>) : OpcionConfig {
+    class OpcionParser(params: Array<String>) : Opcion {
         init {
             if (params.size != 3)
                 throw ArgsException("La opción no es válida")
@@ -16,7 +16,7 @@ sealed interface OpcionConfig {
         override val directorioDestino = params[2]
     }
 
-    class OpcionResumen(params: Array<String>) : OpcionConfig {
+    class OpcionResumen(params: Array<String>) : Opcion {
 
         private var _distrito: String? = null
         private var _directorioOrigen: String? = null
@@ -27,10 +27,10 @@ sealed interface OpcionConfig {
                 _directorioOrigen ?: throw ArgsException("No se ha introducido el directorio de origen")
 
         override val directorioDestino
-            get() =
-                _directorioDestino ?: throw ArgsException("No se ha introducido el directorio de destino")
+            get() = _directorioDestino ?: throw ArgsException("No se ha introducido el directorio de destino")
 
-        val distrito = _distrito
+        val distrito
+            get() = _distrito
 
         init {
             when (params.size) {

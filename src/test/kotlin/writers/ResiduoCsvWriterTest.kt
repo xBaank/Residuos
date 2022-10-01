@@ -7,7 +7,7 @@ import java.io.File
 internal class ResiduoCsvWriterTest {
 
     @Test
-    fun write() {
+    fun shouldWrite() {
         val writer = ResiduosCsvWriter("src/test/resources/written.csv")
         val content = sequenceOf(
             Residuo(

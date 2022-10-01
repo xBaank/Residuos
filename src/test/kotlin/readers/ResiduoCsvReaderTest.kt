@@ -10,7 +10,7 @@ import java.time.LocalDate
 internal class ResiduoCsvReaderTest {
 
     @Test
-    fun read() {
+    fun shouldRead() {
         val reader = ResiduosCsvReader("src/test/resources/residuos.csv")
 
         val data = reader.read()
