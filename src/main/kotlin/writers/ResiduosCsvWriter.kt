@@ -6,7 +6,7 @@ import java.io.File
 import java.nio.file.Files
 
 class ResiduosCsvWriter(private val path: String) : Writer<Residuo> {
-    private val mapper = CsvMapperResiduos()
+    private val mapper = CsvMapperResiduos
 
     override fun write(content: Sequence<Residuo>) = File(path)
         .apply { if (exists()) Files.delete(toPath()) }

@@ -6,14 +6,11 @@ import java.io.File
 import java.io.FileNotFoundException
 
 class ResiduosJsonReader(private val path: String) : Reader<Residuo> {
-    private val maper = JsonMapper()
+    private val maper = JsonMapper
 
     override fun read(): Sequence<Residuo> = sequence {
         File(path)
             .apply { if (!exists()) throw FileNotFoundException() }
-            .run {
-                val inputStream = inputStream()
-                inputStream.use { yieldAll(maper.mapTo(it)) }
-            }
+            .run { inputStream().use { yieldAll(maper.mapTo(it)) } }
     }
 }

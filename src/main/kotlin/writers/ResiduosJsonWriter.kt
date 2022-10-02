@@ -6,7 +6,7 @@ import java.io.File
 import java.nio.file.Files
 
 class ResiduosJsonWriter(private val path: String) : Writer<Residuo> {
-    private val mapper = JsonMapper()
+    private val mapper = JsonMapper
 
     override fun write(content: Sequence<Residuo>) {
         File(path)

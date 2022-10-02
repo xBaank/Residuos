@@ -11,7 +11,7 @@ import java.util.*
  * maps all lines of the csv file to a Residuo lazy sequence
  */
 
-class CsvMapperResiduos {
+object CsvMapperResiduos {
     fun mapTo(input: Sequence<String>): Sequence<Residuo> = input.drop(1).map { line ->
         val (ano, mes, lote, residuo, distrito, nombreDistrito, toneladas) = line.split(';')
 

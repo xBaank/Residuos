@@ -9,7 +9,7 @@ import java.io.InputStream
 import java.util.*
 
 
-class JsonMapper {
+object JsonMapper {
 
     val json = Json {
         prettyPrint = true
