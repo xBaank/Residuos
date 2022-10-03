@@ -13,7 +13,7 @@ object CsvMapperContenedores {
     fun mapTo(input: Sequence<String>): Sequence<Contenedor> = input.drop(1).map { line ->
 
         val (codIntSitu, tipoContenedor, modelo, descripModelo,
-            cantidadContenedores, lote, distrito, tipoVia, nombreVia,
+            cantidadContenedores, lote, distrito, barrio,tipoVia, nombreVia,
             numVia, coordenadaX, coordenadaY, latitud, longitud, direccion
         ) = line.split(';')
 
@@ -39,6 +39,9 @@ object CsvMapperContenedores {
 
         distrito = distrito?.ifBlank { throw CsvException("El distrito no puede quedar vacío") }
             ?: throw CsvException("El distrito no puede ser nulo"),
+
+        barrio = barrio?.ifBlank { throw CsvException("El barrio no puede quedar vacío") }
+            ?: throw CsvException("El barrio no puede ser nulo"),
 
         tipoVia = tipoVia?.ifBlank { throw CsvException("El tipo de vía no puede quedar vacía") }
             ?: throw CsvException("El tipo de vía no puede ser nulo"),
@@ -69,13 +72,12 @@ object CsvMapperContenedores {
     }
 
 
-
     fun mapFrom(input: Sequence<Contenedor>): Sequence<String> = sequence {
         yield("CodigoSituado;TipoContenedor;Modelo;Descripcion;Cantidad;Lote;Distrito;" +
                 "TipoVia;Nombre;Numero;CoordenadaX;CoordenadaY;Longitud;Latitud;Direccion")
         yieldAll(input.map { contenedores -> "${contenedores.codIntSitu};${contenedores.tipoContenedor};" +
                 "${contenedores.modelo};${contenedores.descripModelo};${contenedores.cantidadContenedores};" +
-                "${contenedores.lote};${contenedores.distrito};${contenedores.tipoVia};${contenedores.nombreVia};" +
+                "${contenedores.lote};${contenedores.distrito};${contenedores.barrio};${contenedores.tipoVia};${contenedores.nombreVia};" +
                 "${contenedores.numVia};${contenedores.coordenadaX};${contenedores.coordenadaY};${contenedores.longitud};" +
                 "${contenedores.latitud};${contenedores.direccion}"
 
