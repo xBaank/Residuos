@@ -1,6 +1,7 @@
 [
     {
-        "fecha": "0001-01-01",
+        "ano": "1",
+        "mes": "enero",
         "lote": 2,
         "residuo": "caca",
         "distrito": 1,

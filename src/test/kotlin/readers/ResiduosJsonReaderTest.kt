@@ -1,5 +1,6 @@
 package readers
 
+import extensions.toResiduo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import parsers.residuos.JsonParser
@@ -11,7 +12,7 @@ internal class ResiduosJsonReaderTest {
     fun shouldRead() {
         val reader = FileReader("src/test/resources/residuos.json", JsonParser())
 
-        val data = reader.read()
+        val data = reader.read().toResiduo()
         val residuo = data.firstOrNull()
 
         assert(data.count() == 1)

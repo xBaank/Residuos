@@ -1,6 +1,7 @@
 package readers
 
 import exceptions.CsvException
+import extensions.toResiduo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import parsers.residuos.CsvParserResiduos
@@ -13,7 +14,7 @@ internal class ResiduoCsvReaderTest {
     fun shouldRead() {
         val reader = FileReader("src/test/resources/residuos.csv", CsvParserResiduos())
 
-        val data = reader.read()
+        val data = reader.read().toResiduo()
         val expected = data.firstOrNull()
 
         assert(data.count() == 2138)

@@ -1,5 +1,6 @@
 package writers
 
+import extensions.toResiduoDto
 import models.Residuo
 import org.junit.jupiter.api.Test
 import parsers.residuos.CsvParserResiduos
@@ -24,7 +25,7 @@ internal class ResiduoCsvWriterTest {
             )
         )
 
-        writer.write(content)
+        writer.write(content.toResiduoDto())
 
         val file = File("src/test/resources/written.csv")
         assert(file.exists())

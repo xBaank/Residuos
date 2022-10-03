@@ -5,8 +5,6 @@ import exceptions.CsvException
 import extensions.*
 import java.io.InputStream
 import java.io.OutputStream
-import java.time.Month
-import java.util.*
 
 /**
  * maps all lines of the csv file to a Residuo lazy sequence
@@ -45,47 +43,11 @@ class CsvParserResiduos : Parser<ResiduoDto> {
         outputStream.bufferedWriter().run {
             appendLine("Año;Mes;Lote;Residuo;Distrito;Nombre Distrito;Toneladas")
             input.map { residuo ->
-                "${residuo.ano};${residuo.mes};${residuo.lote};${residuo.residuo};${residuo.distrito};${residuo.nombreDistrito};${residuo.toneladas}"
+                "${residuo.ano};${residuo.mes};${residuo.lote};${residuo.residuo};${residuo.distrito};${residuo.nombreDistrito};${
+                    residuo.toneladas.toString().replace('.', ',')
+                }"
             }.forEach { appendLine(it) }
 
             flush()
         }
-
-
-    private fun String.parse(): Month {
-        return when (this.lowercase(Locale.getDefault())) {
-            "enero" -> Month.JANUARY
-            "febrero" -> Month.FEBRUARY
-            "marzo" -> Month.MARCH
-            "abril" -> Month.APRIL
-            "mayo" -> Month.MAY
-            "junio" -> Month.JUNE
-            "julio" -> Month.JULY
-            "agosto" -> Month.AUGUST
-            "septiembre" -> Month.SEPTEMBER
-            "octubre" -> Month.OCTOBER
-            "noviembre" -> Month.NOVEMBER
-            "diciembre" -> Month.DECEMBER
-            else -> throw CsvException("El mes no es válido")
-        }
-    }
-
-    //reverse parse
-    private fun Month.parse(): String {
-        return when (this) {
-            Month.JANUARY -> "enero"
-            Month.FEBRUARY -> "febrero"
-            Month.MARCH -> "marzo"
-            Month.APRIL -> "abril"
-            Month.MAY -> "mayo"
-            Month.JUNE -> "junio"
-            Month.JULY -> "julio"
-            Month.AUGUST -> "agosto"
-            Month.SEPTEMBER -> "septiembre"
-            Month.OCTOBER -> "octubre"
-            Month.NOVEMBER -> "noviembre"
-            Month.DECEMBER -> "diciembre"
-            else -> throw CsvException("El mes no es válido")
-        }
-    }
 }

@@ -1,1 +1,3 @@
-<ArrayList><Residuo fecha="0001-01-01" lote="2" residuo="caca" distrito="1" nombreDistrito="madrid" toneladas="5.2"/></ArrayList>
+<ArrayList>
+  <ResiduoDto ano="1" mes="enero" lote="2" residuo="caca" distrito="1" nombreDistrito="madrid" toneladas="5.2"/>
+</ArrayList>
