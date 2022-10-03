@@ -1,19 +1,19 @@
 package readers
 
-import mappers.residuos.XmlMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import parsers.residuos.XmlParser
 import java.io.FileNotFoundException
 
 internal class ResiduosXmlReaderTest {
 
     @Test
     fun shouldRead() {
-        val reader = FileReader("src/test/resources/residuos.xml", XmlMapper())
+        val reader = FileReader("src/test/resources/residuos.xml", XmlParser())
 
         val data = reader.read()
         val residuo = data.firstOrNull()
-        
+
         assert(data.count() == 1)
         assert(residuo?.lote == 2)
         assert(residuo?.residuo == "caca")
@@ -24,7 +24,7 @@ internal class ResiduosXmlReaderTest {
 
     @Test
     fun shouldNotReadNonExistingFile() {
-        val reader = FileReader("src/test/resources/asdresiduos.xml", XmlMapper())
+        val reader = FileReader("src/test/resources/asdresiduos.xml", XmlParser())
 
         assertThrows<FileNotFoundException> { reader.read().toList() }
     }

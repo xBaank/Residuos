@@ -1,6 +1,6 @@
 package writers
 
-interface Writer<T> {
+interface Writer<in T> {
     /**
      * Writes a sequence of objects to a destination
      */

@@ -1,14 +1,14 @@
 package writers
 
-import mappers.residuos.Mapper
+import parsers.residuos.Parser
 import java.io.File
 import java.nio.file.Files
 
-class FileWriter<T>(private val path: String, private val mapper: Mapper<T>) : Writer<T> {
+class FileWriter<T>(private val path: String, private val mapper: Parser<T>) : Writer<T> {
 
     override fun write(content: Sequence<T>) = File(path)
         .apply { if (exists()) Files.delete(toPath()) }
         .apply { createNewFile() }
         .outputStream()
-        .use { mapper.map(content, it) }
+        .use { mapper.unParse(content, it) }
 }

@@ -1,9 +1,12 @@
-package models
+package dto
 
-import java.time.LocalDate
+import kotlinx.serialization.Serializable
 
-data class Residuo(
-    val fecha: LocalDate,
+
+@Serializable
+data class ResiduoDto(
+    val ano: String,
+    val mes: String,
     val lote: Int,
     val residuo: String, //Some values are not specified in the specification
     val distrito: Int,

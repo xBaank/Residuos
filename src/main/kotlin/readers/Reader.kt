@@ -1,6 +1,6 @@
 package readers
 
-interface Reader<T> {
+interface Reader<out T> {
     /**
      * Reads from an origin and returns a sequence of objects
      */

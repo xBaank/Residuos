@@ -1,11 +1,10 @@
-package mappers.residuos
+package parsers.residuos
 
+import dto.ResiduoDto
 import exceptions.CsvException
 import extensions.*
-import models.Residuo
 import java.io.InputStream
 import java.io.OutputStream
-import java.time.LocalDate
 import java.time.Month
 import java.util.*
 
@@ -13,19 +12,17 @@ import java.util.*
  * maps all lines of the csv file to a Residuo lazy sequence
  */
 
-class CsvMapperResiduos : Mapper<Residuo> {
-    override fun map(input: InputStream): Sequence<Residuo> =
+class CsvParserResiduos : Parser<ResiduoDto> {
+    override fun parse(input: InputStream): Sequence<ResiduoDto> =
         input.bufferedReader().lineSequence().drop(1).map { line ->
             val (ano, mes, lote, residuo, distrito, nombreDistrito, toneladas) = line.split(';')
 
-            val fecha = LocalDate.of(
-                ano?.toIntOrNull() ?: throw CsvException("Año debe ser un numero"),
-                mes?.parse() ?: throw CsvException("Mes debe estar en español"),
-                1
-            )
+            ResiduoDto(
+                ano = ano?.ifBlank { throw CsvException("") }
+                    ?: throw CsvException("Año debe ser un numero"),
 
-            Residuo(
-                fecha = fecha,
+                mes = mes?.ifBlank { throw CsvException("") }
+                    ?: throw CsvException("Mes debe ser un numero"),
 
                 lote = lote?.toIntOrNull()
                     ?: throw CsvException("El lote no es un número"),
@@ -44,15 +41,13 @@ class CsvMapperResiduos : Mapper<Residuo> {
             )
         }
 
-    override fun map(input: Sequence<Residuo>, outputStream: OutputStream) =
+    override fun unParse(input: Sequence<ResiduoDto>, outputStream: OutputStream) =
         outputStream.bufferedWriter().run {
             appendLine("Año;Mes;Lote;Residuo;Distrito;Nombre Distrito;Toneladas")
             input.map { residuo ->
-                "${residuo.fecha.year};${residuo.fecha.month.parse()};${residuo.lote};${residuo.residuo};${residuo.distrito};${residuo.nombreDistrito};${
-                    residuo.toneladas.toString().replace('.', ',')
-                }"
+                "${residuo.ano};${residuo.mes};${residuo.lote};${residuo.residuo};${residuo.distrito};${residuo.nombreDistrito};${residuo.toneladas}"
             }.forEach { appendLine(it) }
-            
+
             flush()
         }
 
@@ -71,7 +66,7 @@ class CsvMapperResiduos : Mapper<Residuo> {
             "octubre" -> Month.OCTOBER
             "noviembre" -> Month.NOVEMBER
             "diciembre" -> Month.DECEMBER
-            else -> throw IllegalArgumentException("El mes no es válido")
+            else -> throw CsvException("El mes no es válido")
         }
     }
 
@@ -90,7 +85,7 @@ class CsvMapperResiduos : Mapper<Residuo> {
             Month.OCTOBER -> "octubre"
             Month.NOVEMBER -> "noviembre"
             Month.DECEMBER -> "diciembre"
-            else -> throw IllegalArgumentException("El mes no es válido")
+            else -> throw CsvException("El mes no es válido")
         }
     }
 }

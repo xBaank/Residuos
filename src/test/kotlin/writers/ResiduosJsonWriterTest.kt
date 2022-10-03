@@ -2,9 +2,9 @@ package writers
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import mappers.residuos.JsonMapper
 import models.Residuo
 import org.junit.jupiter.api.Test
+import parsers.residuos.JsonParser
 import java.io.File
 import java.time.LocalDate
 import java.time.Month
@@ -25,7 +25,7 @@ internal class ResiduosJsonWriterTest {
             )
         )
 
-        val writer = FileWriter("src/test/resources/written.json", JsonMapper())
+        val writer = FileWriter("src/test/resources/written.json", JsonParser())
 
         writer.write(content)
 
