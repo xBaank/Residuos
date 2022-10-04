@@ -1,8 +1,8 @@
 package readers
 
-interface Reader<T> {
+interface Reader<out T> {
     /**
-     * Takes a path and returns a sequence of parsed objects
+     * Reads from an origin and returns a sequence of objects
      */
     fun read(): Sequence<T>
 }

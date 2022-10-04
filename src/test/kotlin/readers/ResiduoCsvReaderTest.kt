@@ -1,8 +1,10 @@
 package readers
 
 import exceptions.CsvException
+import extensions.toResiduo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import parsers.residuos.CsvParserResiduos
 import java.io.FileNotFoundException
 import java.time.LocalDate
 
@@ -10,9 +12,9 @@ internal class ResiduoCsvReaderTest {
 
     @Test
     fun shouldRead() {
-        val reader = ResiduosCsvReader("src/test/resources/residuos.csv")
+        val reader = FileReader("src/test/resources/residuos.csv", CsvParserResiduos())
 
-        val data = reader.read()
+        val data = reader.read().toResiduo()
         val expected = data.firstOrNull()
 
         assert(data.count() == 2138)
@@ -26,14 +28,14 @@ internal class ResiduoCsvReaderTest {
 
     @Test
     fun shouldNotRead() {
-        val reader = ResiduosCsvReader("src/test/resources/badResiduos.csv")
+        val reader = FileReader("src/test/resources/badResiduos.csv", CsvParserResiduos())
 
         assertThrows<CsvException> { reader.read().toList() }
     }
 
     @Test
     fun shouldNotReadNonExistingFile() {
-        val reader = ResiduosCsvReader("src/test/resources/badResiduosasdasd.csv")
+        val reader = FileReader("src/test/resources/asdresiduos.csv", CsvParserResiduos())
 
         assertThrows<FileNotFoundException> { reader.read().toList() }
     }

@@ -1,8 +1,8 @@
 package writers
 
-interface Writer<T> {
+interface Writer<in T> {
     /**
-     * Takes a path and a sequence of objects and writes them to the path
+     * Writes a sequence of objects to a destination
      */
     fun write(content: Sequence<T>)
 }

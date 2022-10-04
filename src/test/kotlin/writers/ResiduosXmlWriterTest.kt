@@ -3,15 +3,15 @@ package writers
 import dto.ResiduoDto
 import extensions.toResiduoDto
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import models.Residuo
+import nl.adaptivity.xmlutil.serialization.XML
 import org.junit.jupiter.api.Test
-import parsers.residuos.JsonParserResiduos
+import parsers.residuos.XmlParserResiduos
 import java.io.File
 import java.time.LocalDate
 import java.time.Month
 
-internal class ResiduosJsonWriterTest {
+internal class ResiduosXmlWriterTest {
 
     @Test
     fun shouldWrite() {
@@ -27,13 +27,19 @@ internal class ResiduosJsonWriterTest {
             )
         )
 
-        val writer = FileWriter("src/test/resources/written.json", JsonParserResiduos())
+        val writer = FileWriter("src/test/resources/written.xml", XmlParserResiduos())
 
         writer.write(content.toResiduoDto())
 
-        val file = File("src/test/resources/written.json")
+        val file = File("src/test/resources/written.xml")
         assert(file.exists())
-        val residuo: List<ResiduoDto> = Json.decodeFromString(file.readText())
+
+        val xml = XML {
+            autoPolymorphic = true
+        }
+
+        val residuo = xml.decodeFromString<List<ResiduoDto>>(file.inputStream().bufferedReader().readText())
+
         assert(residuo.count() == 1)
         assert(residuo[0].lote == 2)
         assert(residuo[0].residuo == "caca")
