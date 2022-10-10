@@ -9,7 +9,6 @@ import writers.FileWriter
 import java.io.File
 
 internal class ContenedorCsvWriterTest {
-
     @Test
     fun shouldWrite() {
         val writer = FileWriter("src/test/resources/writtenContenedores.csv", CsvParserContenedores())
@@ -31,8 +30,6 @@ internal class ContenedorCsvWriterTest {
                 "1",
                 "1",
                 "calle 1"
-
-
             )
         )
 
@@ -42,8 +39,8 @@ internal class ContenedorCsvWriterTest {
         assert(file.exists())
         val lines = file.readLines()
         assert(lines.isNotEmpty())
-        assert(lines[0] == "CodigoSituado;TipoContenedor;Modelo;Descripcion;Cantidad;Lote;Distrito;Barrio;TipoVia;Nombre;Numero;CoordenadaX;CoordenadaY;Longitud;Latitud;Direccion")
+        assert(lines[0] == "CodigoSituado;TipoContenedor;Modelo;Descripcion;Cantidad;Lote;Distrito;Barrio;TipoVia;" +
+                "Nombre;Numero;CoordenadaX;CoordenadaY;Longitud;Latitud;Direccion")
         assert(lines[1] == "1;RESTO;caca;caca;1;1;madrid;barrio;calle;calle;1;1.0;1.0;1;1;calle 1")
-        //TODO ACABAR
     }
 }
