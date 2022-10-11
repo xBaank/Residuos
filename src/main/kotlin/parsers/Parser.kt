@@ -6,10 +6,10 @@ interface Parser<T> {
     val extension: String
 
     /**
-     * Read from an input stream and return a sequence of objects
+     * Read from an input stream and return a type
      * *NOTE* It's the caller responsibility to close the input stream
      */
-    fun parse(input: InputStream): Sequence<T>
+    fun parse(input: InputStream): T
 
 
 }

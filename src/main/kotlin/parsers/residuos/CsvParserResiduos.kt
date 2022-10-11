@@ -1,5 +1,6 @@
 package parsers.residuos
 
+import aliases.Residuos
 import dto.ResiduoDto
 import exceptions.CsvException
 import extensions.*
@@ -11,7 +12,7 @@ import java.io.OutputStream
  * maps all lines of the csv file to a Residuo lazy sequence
  */
 
-class CsvParserResiduos : CsvParser<ResiduoDto> {
+class CsvParserResiduos : CsvParser<Residuos> {
     override val firstLine: String
         get() = "Año;Mes;Lote;Residuo;Distrito;Nombre Distrito;Toneladas"
 

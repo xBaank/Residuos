@@ -1,5 +1,6 @@
 package parsers.contenedores
 
+import aliases.Contenedores
 import dto.ContenedorDto
 import exceptions.CsvException
 import extensions.*
@@ -13,7 +14,7 @@ import java.io.OutputStream
  */
 
 
-class CsvParserContenedores : CsvParser<ContenedorDto> {
+class CsvParserContenedores : CsvParser<Contenedores> {
     override val firstLine: String
         get() = "Código Interno del Situad;Tipo Contenedor;Modelo;Descripcion Modelo;Cantidad;Lote;Distrito;Barrio;Tipo Vía;Nombre;Número;COORDENADA X;COORDENADA Y;LONGITUD;LATITUD;DIRECCION"
 

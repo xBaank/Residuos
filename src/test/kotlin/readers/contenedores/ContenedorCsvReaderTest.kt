@@ -19,9 +19,9 @@ internal class ContenedorCsvReaderTest {
         val expected = data.firstOrNull()
 
         assert(data.count() == 43637)
-        assert(expected?.codIntSitu=="181193")
-        assert(expected?.tipoContenedor== TipoContenedor.RESTO)
-        assert(expected?.modelo=="CL_18")
+        assert(expected?.codIntSitu == "181193")
+        assert(expected?.tipoContenedor == TipoContenedor.RESTO)
+        assert(expected?.modelo == "CL_18")
     }
 
     @Test

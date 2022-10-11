@@ -1,18 +1,17 @@
 package readers
 
+import aliases.CsvSequenceParser
 import extensions.firstLine
-import parsers.formats.CsvParser
 import java.io.File
 
-class CsvDirectoryReader<T>(path: String, private val parser: CsvParser<T>) :
-    Reader<T> {
+class CsvDirectoryReader<T>(path: String, private val parser: CsvSequenceParser<T>) : Reader<T> {
 
     private val fileReader: FileReader<T>
 
     init {
         val csvFiles = File(path)
             .apply { if (!isDirectory) throw IllegalArgumentException("$path no es un directorio") }
-            .listFiles { _, name -> name.endsWith(".csv") }
+            .listFiles { _, name -> name.endsWith(parser.extension) }
 
         val firstLines = csvFiles?.map { file -> file to file.firstLine }
             ?: throw IllegalArgumentException("No se encontraron archivos .csv en el directorio $path")

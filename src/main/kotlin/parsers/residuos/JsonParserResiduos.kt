@@ -1,6 +1,7 @@
 package parsers.residuos
 
 
+import aliases.Residuos
 import dto.ResiduoDto
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -12,7 +13,7 @@ import java.io.OutputStream
 import java.util.*
 
 
-class JsonParserResiduos(private val json: Json = Json { prettyPrint = true }) : JsonParser<ResiduoDto> {
+class JsonParserResiduos(private val json: Json = Json { prettyPrint = true }) : JsonParser<Residuos> {
 
     @OptIn(ExperimentalSerializationApi::class)
     override fun parse(input: InputStream): Sequence<ResiduoDto> = json.decodeToSequence(input)

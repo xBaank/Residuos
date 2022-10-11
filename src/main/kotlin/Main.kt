@@ -2,7 +2,7 @@ import args.ArgsParser
 import args.Opcion
 import args.OpcionParser
 import args.OpcionResumen
-import extensions.toContenedor
+import models.Consulta
 import parsers.contenedores.CsvParserContenedores
 import parsers.contenedores.JsonParserContenedores
 import parsers.contenedores.XmlParserContenedores
@@ -11,18 +11,25 @@ import parsers.residuos.CsvParserResiduos
 import parsers.residuos.JsonParserResiduos
 import parsers.residuos.XmlParserResiduos
 import readers.CsvDirectoryReader
+import utils.runAsync
 import writers.DirectoryWriter
+import java.util.concurrent.CompletableFuture.supplyAsync
 
 fun main(args: Array<String>) {
-    val opcion = ArgsParser(args).parse()
 
-    when (opcion) {
+    when (val opcion = ArgsParser(args).parse()) {
         is OpcionParser -> writeParser(opcion)
-
-        is OpcionResumen -> {
-            //val controller = ResumenController().getResumen(contenedoresFileReader.read().toContenedor())
-        }
+        is OpcionResumen -> writeResumen(opcion)
     }
+}
+
+fun writeResumen(opcion: Opcion) {
+    val residuosFuture = supplyAsync { CsvDirectoryReader(opcion.directorioOrigen, CsvParserResiduos()).read() }
+    val contenedoresFuture = supplyAsync { CsvDirectoryReader(opcion.directorioOrigen, CsvParserContenedores()).read() }
+
+    val consulta = Consulta(contenedoresFuture.get(), residuosFuture.get())
+
+    DirectoryWriter(opcion.directorioOrigen, "resumen", HtmlUnParser()).write(consulta)
 }
 
 private fun writeParser(opcion: Opcion) {
@@ -46,12 +53,15 @@ private fun writeParser(opcion: Opcion) {
     )
 
 
-    val residuosCsvFileReader = CsvDirectoryReader(opcion.directorioOrigen, csvParserResiduos)
-    val contenedoresFileReader = CsvDirectoryReader(opcion.directorioOrigen, csvParserContenedores)
+    val residuosFuture = supplyAsync { CsvDirectoryReader(opcion.directorioOrigen, csvParserResiduos).read() }
+    val contenedoresFuture = supplyAsync { CsvDirectoryReader(opcion.directorioOrigen, csvParserContenedores).read() }
 
-    residuosFileWriter.write(residuosCsvFileReader.read())
-    contenedoresFileWriter.write(contenedoresFileReader.read())
+    //write async
 
-    //TESTING HTML
-    HtmlUnParser().unParse(contenedoresFileReader.read().toContenedor(), System.out)
+    runAsync(
+        { residuosFileWriter.write(residuosFuture.get()) },
+        { contenedoresFileWriter.write(contenedoresFuture.get()) }
+    )
+
 }
+

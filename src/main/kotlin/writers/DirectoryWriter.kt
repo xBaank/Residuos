@@ -1,13 +1,17 @@
 package writers
 
 import parsers.UnParser
+import utils.runAsync
 import java.io.File
 import java.io.File.separator
 import java.util.*
-import java.util.concurrent.CompletableFuture
+import java.util.function.Supplier
 
-class DirectoryWriter<T>(private var path: String, private val fileName: String, vararg parsers: UnParser<T>) :
-    Writer<T> {
+class DirectoryWriter<T>(
+    private var path: String,
+    private val fileName: String,
+    vararg parsers: UnParser<T>
+) : Writer<T> {
     private val fileWriters = mutableListOf<FileWriter<T>>()
 
     init {
@@ -27,10 +31,5 @@ class DirectoryWriter<T>(private var path: String, private val fileName: String,
         }
     }
 
-    override fun write(content: Sequence<T>) {
-        val futures = fileWriters.map {
-            CompletableFuture.runAsync { it.write(content) }
-        }.toTypedArray()
-        CompletableFuture.allOf(*futures).join()
-    }
+    override fun write(content: T) = runAsync(*fileWriters.map { Supplier { it.write(content) } }.toTypedArray())
 }

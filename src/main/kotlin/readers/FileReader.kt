@@ -1,10 +1,10 @@
 package readers
 
-import parsers.Parser
+import aliases.SequenceParser
 import java.io.File
 import java.io.FileNotFoundException
 
-class FileReader<T>(path: String, private val parser: Parser<T>) : Reader<T> {
+class FileReader<T>(path: String, private val parser: SequenceParser<T>) : Reader<T> {
     private val file = File(path)
     override fun read(): Sequence<T> = sequence {
         file
