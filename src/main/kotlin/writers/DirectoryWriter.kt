@@ -1,7 +1,7 @@
 package writers
 
 import parsers.UnParser
-import utils.runAsync
+import utils.awaitAll
 import java.io.File
 import java.io.File.separator
 import java.util.*
@@ -31,5 +31,5 @@ class DirectoryWriter<T>(
         }
     }
 
-    override fun write(content: T) = runAsync(*fileWriters.map { Supplier { it.write(content) } }.toTypedArray())
+    override fun write(content: T) = awaitAll(*fileWriters.map { Supplier { it.write(content) } }.toTypedArray())
 }

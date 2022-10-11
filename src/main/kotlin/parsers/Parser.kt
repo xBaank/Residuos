@@ -2,7 +2,7 @@ package parsers
 
 import java.io.InputStream
 
-interface Parser<T> {
+interface Parser<out T> {
     val extension: String
 
     /**

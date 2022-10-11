@@ -11,7 +11,7 @@ import parsers.residuos.CsvParserResiduos
 import parsers.residuos.JsonParserResiduos
 import parsers.residuos.XmlParserResiduos
 import readers.CsvDirectoryReader
-import utils.runAsync
+import utils.awaitAll
 import writers.DirectoryWriter
 import java.util.concurrent.CompletableFuture.supplyAsync
 
@@ -58,7 +58,7 @@ private fun writeParser(opcion: Opcion) {
 
     //write async
 
-    runAsync(
+    awaitAll(
         { residuosFileWriter.write(residuosFuture.get()) },
         { contenedoresFileWriter.write(contenedoresFuture.get()) }
     )

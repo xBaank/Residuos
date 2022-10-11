@@ -28,6 +28,9 @@ dependencies {
     // include for Common module
     implementation("org.jetbrains.kotlinx:kotlinx-html:$kotlinxHtmlVersion")
 
+    implementation("org.jetbrains.lets-plot:lets-plot-common:2.5.0")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:4.1.0")
+
 }
 
 tasks.test {
