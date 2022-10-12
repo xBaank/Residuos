@@ -13,7 +13,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class XmlUnparser : UnParser<Consulta> {
+class XmlUnparser : UnParser<Bitacora> {
 
     @Serializable
     data class Bitacora(
