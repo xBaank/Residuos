@@ -1,9 +1,10 @@
 package parsers.contenedores
 
+import aliases.Contenedores
 import dto.ContenedorDto
 import exceptions.CsvException
 import extensions.*
-import parsers.Parser
+import parsers.formats.CsvParser
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -12,14 +13,18 @@ import java.io.OutputStream
  * maps all lines of the csv file to a Residuo lazy sequence
  */
 
-class CsvParserContenedores : Parser<ContenedorDto> {
-    override fun parse(input: InputStream): Sequence<ContenedorDto> =
-        input.bufferedReader().lineSequence().drop(1).map { line ->
 
-            val (codIntSitu, tipoContenedor, modelo, descripModelo,
-                cantidadContenedores, lote, distrito, barrio, tipoVia, nombreVia,
-                numVia, coordenadaX, coordenadaY, latitud, longitud, direccion
-            ) = line.split(';')
+class CsvParserContenedores : CsvParser<Contenedores> {
+    override val firstLine: String
+        get() = "Código Interno del Situad;Tipo Contenedor;Modelo;Descripcion Modelo;Cantidad;Lote;Distrito;Barrio;Tipo Vía;Nombre;Número;COORDENADA X;COORDENADA Y;LONGITUD;LATITUD;DIRECCION"
+
+
+    override fun parse(input: InputStream): Sequence<ContenedorDto> =
+        input.bufferedReader().lineSequence().filterFirstLine(firstLine).drop(1).map { line ->
+
+            val (codIntSitu, tipoContenedor, modelo, descripModelo, cantidadContenedores, lote, distrito, barrio, tipoVia, nombreVia, numVia, coordenadaX, coordenadaY, longitud, latitud, direccion) = line.split(
+                ';'
+            )
 
             ContenedorDto(
 
@@ -44,7 +49,7 @@ class CsvParserContenedores : Parser<ContenedorDto> {
                 distrito = distrito?.ifBlank { throw CsvException("El distrito no puede quedar vacío") }
                     ?: throw CsvException("El distrito no puede ser nulo"),
 
-                barrio = barrio?.ifBlank { throw CsvException("El barrio no puede quedar vacío") }
+                barrio = barrio?.ifBlank { "" }
                     ?: throw CsvException("El barrio no puede ser nulo"),
 
                 tipoVia = tipoVia?.ifBlank { throw CsvException("El tipo de vía no puede quedar vacía") }
@@ -53,20 +58,17 @@ class CsvParserContenedores : Parser<ContenedorDto> {
                 nombreVia = nombreVia?.ifBlank { throw CsvException("El nombre de vía no puede quedar vacía") }
                     ?: throw CsvException("El nombre de vía no puede ser nulo"),
 
-                numVia = numVia?.toIntOrNull()
-                    ?: throw CsvException("El numero de vía no es un número"),
+                numVia = numVia?.toIntOrNull(),
 
-                coordenadaX = coordenadaX?.toLongOrNull()
-                    ?: throw CsvException("La coordenada no es un número"),
+                coordenadaX = coordenadaX?.toFloatOrNull(),
 
-                coordenadaY = coordenadaY?.toLongOrNull()
-                    ?: throw CsvException("La coordenada no es un número"),
+                coordenadaY = coordenadaY?.toFloatOrNull(),
 
-                longitud = longitud?.toIntOrNull()
-                    ?: throw CsvException("La longitud no es un número"),
+                longitud = longitud?.ifBlank { throw CsvException("La longitud no puede quedar vacía") }
+                    ?: throw CsvException("La longitud no es un número separado por punto"),
 
-                latitud = latitud?.toIntOrNull()
-                    ?: throw CsvException("La latitud no es un número"),
+                latitud = latitud?.ifBlank { throw CsvException("La latitud no puede quedar vacía") }
+                    ?: throw CsvException("La latitud no es un número separado por punto"),
 
                 direccion = direccion?.ifBlank { throw CsvException("La dirección no puede quedar vacía") }
                     ?: throw CsvException("El dirección no puede ser nula")
@@ -79,7 +81,7 @@ class CsvParserContenedores : Parser<ContenedorDto> {
     override fun unParse(input: Sequence<ContenedorDto>, outputStream: OutputStream) =
         outputStream.bufferedWriter().run {
             appendLine(
-                "CodigoSituado;TipoContenedor;Modelo;Descripcion;Cantidad;Lote;Distrito;" +
+                "CodigoSituado;TipoContenedor;Modelo;Descripcion;Cantidad;Lote;Distrito;Barrio;" +
                         "TipoVia;Nombre;Numero;CoordenadaX;CoordenadaY;Longitud;Latitud;Direccion"
             )
             input.map { contenedores ->
@@ -90,5 +92,7 @@ class CsvParserContenedores : Parser<ContenedorDto> {
                         "${contenedores.latitud};${contenedores.direccion}"
 
             }.forEach { appendLine(it) }
+
+            flush()
         }
 }

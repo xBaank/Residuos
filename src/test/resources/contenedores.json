@@ -1,0 +1,20 @@
+[
+    {
+        "codIntSitu": "1",
+        "tipoContenedor": "ORGÁNICA",
+        "modelo": "caca",
+        "descripModelo": "caca",
+        "cantidadContenedores": 1,
+        "lote": 1,
+        "distrito": "madrid",
+        "barrio": "barrio",
+        "tipoVia": "calle",
+        "nombreVia": "calle",
+        "numVia": 1,
+        "coordenadaX": 1.0,
+        "coordenadaY": 1.0,
+        "longitud": "1",
+        "latitud": "1",
+        "direccion": "calle 1"
+    }
+]

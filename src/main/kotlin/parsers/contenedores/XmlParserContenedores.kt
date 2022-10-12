@@ -1,10 +1,11 @@
 package parsers.contenedores
 
+import aliases.Contenedores
 import dto.ContenedorDto
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import nl.adaptivity.xmlutil.serialization.XML
-import parsers.Parser
+import parsers.formats.XmlParser
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -13,7 +14,7 @@ class XmlParserContenedores(
         autoPolymorphic = true
         indentString = "  "
     }
-) : Parser<ContenedorDto> {
+) : XmlParser<Contenedores> {
     override fun parse(input: InputStream): Sequence<ContenedorDto> =
         xml.decodeFromString<List<ContenedorDto>>(input.reader().readText()).asSequence()
 

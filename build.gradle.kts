@@ -11,7 +11,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    maven(url = "https://s01.oss.sonatype.org/content/repositories/releases/")
+    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
 }
 
 dependencies {
@@ -19,7 +19,17 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
     implementation("io.github.pdvrieze.xmlutil:core-jvm:0.84.3")
     implementation("io.github.pdvrieze.xmlutil:serialization-jvm:0.84.3")
+    //Fill this in with the version of kotlinx in use in your project
+    val kotlinxHtmlVersion = "0.8.0"
 
+    // include for JVM target
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:$kotlinxHtmlVersion")
+
+    // include for Common module
+    implementation("org.jetbrains.kotlinx:kotlinx-html:$kotlinxHtmlVersion")
+
+    implementation("org.jetbrains.lets-plot:lets-plot-common:2.5.0")
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:4.1.0")
 
 }
 

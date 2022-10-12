@@ -1,7 +1,6 @@
 package extensions
 
 import dto.ResiduoDto
-import exceptions.CsvException
 import models.Residuo
 import java.time.LocalDate
 import java.time.Month
@@ -52,7 +51,7 @@ private fun String.parse(): Month {
         "octubre" -> Month.OCTOBER
         "noviembre" -> Month.NOVEMBER
         "diciembre" -> Month.DECEMBER
-        else -> throw CsvException("El mes no es válido")
+        else -> throw IllegalArgumentException("El mes no es válido")
     }
 }
 
@@ -71,6 +70,6 @@ private fun Month.parse(): String {
         Month.OCTOBER -> "octubre"
         Month.NOVEMBER -> "noviembre"
         Month.DECEMBER -> "diciembre"
-        else -> throw CsvException("El mes no es válido")
+        else -> throw IllegalArgumentException("El mes no es válido")
     }
 }

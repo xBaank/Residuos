@@ -1,18 +1,19 @@
 package parsers.contenedores
 
 
+import aliases.Contenedores
 import dto.ContenedorDto
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeToSequence
 import kotlinx.serialization.json.encodeToStream
-import parsers.Parser
+import parsers.formats.JsonParser
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
 
 
-class JsonParserContenedores(private val json: Json = Json { prettyPrint = true }) : Parser<ContenedorDto> {
+class JsonParserContenedores(private val json: Json = Json { prettyPrint = true }) : JsonParser<Contenedores> {
 
     @OptIn(ExperimentalSerializationApi::class)
     override fun parse(input: InputStream): Sequence<ContenedorDto> = json.decodeToSequence(input)
