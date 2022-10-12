@@ -1,8 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.20"
-    kotlin("plugin.serialization") version "1.7.20"
+    kotlin("jvm") version "1.7.10"
+    kotlin("plugin.serialization") version "1.7.10"
+    id("org.jetbrains.kotlinx.dataframe") version "0.8.1"
     application
 }
 
@@ -30,8 +31,12 @@ dependencies {
 
     implementation("org.jetbrains.lets-plot:lets-plot-common:2.5.0")
     implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:4.1.0")
+    implementation("org.jetbrains.kotlinx:dataframe:0.8.1")
 
 }
+
+kotlin.sourceSets.getByName("main").kotlin.srcDir("build/generated/ksp/main/kotlin/")
+
 
 tasks.test {
     useJUnitPlatform()

@@ -1,8 +1,8 @@
 package models
 
-import kotlinx.serialization.Serializable
+import org.jetbrains.kotlinx.dataframe.annotations.DataSchema
 
-@Serializable
+@DataSchema
 data class Contenedor(
     val codIntSitu: String,
     val tipoContenedor: TipoContenedor,

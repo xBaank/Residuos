@@ -1,7 +1,9 @@
 package models
 
+import org.jetbrains.kotlinx.dataframe.annotations.DataSchema
 import java.time.LocalDate
 
+@DataSchema
 data class Residuo(
     val fecha: LocalDate,
     val lote: Int,
