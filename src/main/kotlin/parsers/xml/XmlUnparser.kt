@@ -39,11 +39,7 @@ class XmlUnparser : UnParser<Bitacora> {
     override val extension: String
         get() = ".xml"
 
-    override fun unParse(input: Consulta, outputStream: OutputStream) {
-
-        val contenedores = input.contenedores.toContenedor()
-        val residuos = input.residuos.toResiduo()
-
-        outputStream.bufferedWriter().append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").appendLine()
+    override fun unParse(input: Bitacora, outputStream: OutputStream) {
+         xml.encodeToString(input).let { outputStream.write(it.toByteArray()) }
     }
 }
