@@ -40,7 +40,7 @@ fun writeResumen(opcion: OpcionResumen) {
 
     val consulta = Consulta(contenedoresFuture.get(), residuosFuture.get())
 
-    DirectoryWriter(opcion.directorioOrigen, "resumen", HtmlExporter()).write(consulta)
+    DirectoryWriter(opcion.directorioDestino, "resumen", HtmlExporter()).write(consulta)
 }
 
 fun writeResumenDistrito(opcion: OpcionResumen) {
@@ -55,7 +55,7 @@ fun writeResumenDistrito(opcion: OpcionResumen) {
             StringUtils.stripAccents(opcion.distrito).uppercase()
         )
 
-    DirectoryWriter(opcion.directorioOrigen, "resumen${opcion.distrito}", HtmlDistritoExporter()).write(consulta)
+    DirectoryWriter(opcion.directorioDestino, "resumen${opcion.distrito}", HtmlDistritoExporter()).write(consulta)
 }
 
 fun writeParser(opcion: Opcion) {
