@@ -2,6 +2,7 @@ import args.ArgsParser
 import args.Opcion
 import args.OpcionParser
 import args.OpcionResumen
+import models.Bitacora
 import models.Consulta
 import models.ConsultaDistrito
 import org.apache.commons.lang3.StringUtils
@@ -13,12 +14,15 @@ import parsers.exporting.html.HtmlExporter
 import parsers.exporting.residuos.CsvExporterResiduos
 import parsers.exporting.residuos.JsonExporterResiduos
 import parsers.exporting.residuos.XmlExporterResiduos
+import parsers.exporting.xml.BitacoraExporter
 import parsers.importing.contenedores.CsvImporterContenedores
 import parsers.importing.residuos.CsvImporterResiduos
 import readers.CsvDirectoryReader
 import utils.awaitAll
 import writers.DirectoryWriter
+import java.util.UUID
 import java.util.concurrent.CompletableFuture.supplyAsync
+import kotlin.time.Duration
 
 fun main(args: Array<String>) {
 
@@ -88,5 +92,13 @@ fun writeParser(opcion: Opcion) {
         { contenedoresFileWriter.write(contenedoresFuture.get()) }
     )
 
+    val bitacoraFileWriter = DirectoryWriter(
+        opcion.directorioDestino,
+        "bitacora",
+        BitacoraExporter()
+    )
+
+    val bitacora = Bitacora(UUID.randomUUID().toString(), "Resumen Global",true, Duration.ZERO)
+        bitacoraFileWriter.write(bitacora)
 }
 

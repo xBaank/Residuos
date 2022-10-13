@@ -1,10 +1,7 @@
 package models
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import nl.adaptivity.xmlutil.serialization.XmlElement
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.time.Duration
 
@@ -12,18 +9,9 @@ import kotlin.time.Duration
 data class Bitacora(
     val id: String = UUID.randomUUID().toString(),
     @XmlElement(true)
-    val instante: String = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
-    @XmlElement(true)
-    val opcion: TipoOpcion,
+    val opcion: String,
     @XmlElement(true)
     val hasExito: Boolean,
     @XmlElement(true)
-    @Contextual
     val tiempoEjecucion: Duration
 )
-
-enum class TipoOpcion(val tipo: String) {
-    PARSER("PARSER"),
-    RESUMENGLOBAL("RESUMENGLOBAL"),
-    RESUMENCIUDAD("RESUMENCIUDAD")
-}
