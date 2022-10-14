@@ -7,6 +7,8 @@ class LoggerDirectoryWritter<T>(private val writer: DirectoryWriter<T>, private 
     suspend fun write(content: T) {
         logger.info("Writing ${writer.fileName} to ${writer.path}")
         logger.info("Formats ${writer.exporters.joinToString(separator = " ") { it.extension }}")
+        logger.info("Exporters: ${writer.exporters.map { it::class.simpleName }.joinToString(" ")}")
+
         writer.write(content)
     }
 }
