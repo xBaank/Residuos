@@ -6,8 +6,10 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
 
-class FileReader<T>(val path: String, private val parser: SequenceImporter<T>) {
+class FileReader<T>(path: String, private val parser: SequenceImporter<T>) {
     private val file = File(path)
+
+    //Change context, so we don't block other threads, like ui
     suspend fun read(): Sequence<T> = withContext(Dispatchers.IO) {
         sequence {
             file

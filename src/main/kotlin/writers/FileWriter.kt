@@ -6,8 +6,10 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Files
 
-internal class FileWriter<T>(val path: String, private val parser: IExporter<T>) {
+internal class FileWriter<T>(path: String, private val parser: IExporter<T>) {
     private val file = File(path)
+
+    //Change context, so we don't block other threads, like ui
     suspend fun write(content: T) = withContext(Dispatchers.IO) {
         file
             .apply { if (isDirectory) throw IllegalArgumentException("El archivo destino no puede ser un directorio") }
