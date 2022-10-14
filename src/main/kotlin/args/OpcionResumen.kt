@@ -2,6 +2,10 @@ package args
 
 import exceptions.ArgsException
 
+
+private const val correctFormat =
+    "debe ser: resumen <directorioOrigen> <directorioDestino> o resumen <distrito> <directorioOrigen> <directorioDestino>"
+
 class OpcionResumen(params: Array<String>) : Opcion {
 
     override fun toString(): String = "Resumen ${if (distrito == null) "global" else "$distrito"}"
@@ -33,7 +37,9 @@ class OpcionResumen(params: Array<String>) : Opcion {
                 _directorioDestino = params[2]
             }
 
-            else -> throw ArgsException("La opción no es válida")
+            else -> throw ArgsException(
+                "Formato incorrecto para la opción resumen, $correctFormat"
+            )
         }
     }
 }

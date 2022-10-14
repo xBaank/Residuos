@@ -1,10 +1,10 @@
 package readers
 
 import aliases.SequenceImporter
+import exceptions.FileException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.FileNotFoundException
 
 class FileReader<T>(path: String, private val parser: SequenceImporter<T>) {
     private val file = File(path)
@@ -13,8 +13,8 @@ class FileReader<T>(path: String, private val parser: SequenceImporter<T>) {
     suspend fun read(): Sequence<T> = withContext(Dispatchers.IO) {
         sequence {
             file
-                .apply { if (isDirectory) throw IllegalArgumentException("El archivo origen no puede ser un directorio") }
-                .apply { if (!exists()) throw FileNotFoundException("File not found") }
+                .apply { if (isDirectory) throw FileException("El archivo origen no puede ser un directorio") }
+                .apply { if (!exists()) throw FileException("Archivo no encontrado") }
                 .inputStream()
                 .use { yieldAll(parser.import(it)) }
         }

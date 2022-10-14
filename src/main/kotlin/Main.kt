@@ -13,60 +13,48 @@ import core.exporting.residuos.XmlExporterResiduos
 import core.exporting.xml.BitacoraExporter
 import core.importing.contenedores.CsvImporterContenedores
 import core.importing.residuos.CsvImporterResiduos
+import exceptions.ArgsException
+import exceptions.FileException
 import extensions.loggedWith
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import models.Bitacora
 import models.Consulta
 import models.ConsultaDistrito
 import mu.KotlinLogging
 import org.apache.commons.lang3.StringUtils
 import readers.CsvDirectoryReader
+import utils.withBitacora
 import writers.DirectoryWriter
-import java.time.Duration
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 val logger = KotlinLogging.logger("Console")
-fun main(args: Array<String>) = runBlocking {
-    when (val opcion = ArgsParser(args).parse()) {
-        is OpcionParser -> withBitacora(opcion) { writeParser(opcion) }
-        is OpcionResumen -> withBitacora(opcion) { handleResumen(opcion) }
-    }
-}
-
-suspend fun withBitacora(opcion: Opcion, process: suspend () -> Unit) {
-    var ex: Throwable? = null
-    var hasExito = true
-    val start = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
-    val instant = Instant.now()
-
+fun main(args: Array<String>): Unit = runBlocking {
     runCatching {
-        process()
+        val opcion = ArgsParser(args).parse()
+
+        val bitacoraWriter = DirectoryWriter(
+            opcion.directorioDestino,
+            "bitacora",
+            BitacoraExporter()
+        ) loggedWith logger
+
+        when (opcion) {
+            is OpcionParser -> withBitacora(bitacoraWriter, opcion) { writeParser(opcion) }
+            is OpcionResumen -> withBitacora(bitacoraWriter, opcion) { handleResumen(opcion) }
+        }
     }.onSuccess {
-        hasExito = true
+        logger.info { "Proceso finalizado correctamente" }
     }.onFailure {
-        hasExito = false
-        ex = it
+        when (it) {
+            //For args and file exceptions we don't log the stacktrace
+            is ArgsException -> logger.error(it.message)
+            is FileException -> logger.error(it.message)
+            else -> logger.error(it) { it.message }
+        }
     }
-
-    val writerBitacora = DirectoryWriter(opcion.directorioDestino, "bitacora", BitacoraExporter()) loggedWith logger
-    writerBitacora.write(
-        Bitacora(
-            UUID.randomUUID().toString(),
-            start,
-            opcion.toString(),
-            hasExito,
-            Duration.between(Instant.now(), instant).toString()
-        )
-    )
-
-    throw ex ?: return
 }
+
 
 suspend fun handleResumen(opcion: OpcionResumen) {
     if (opcion.distrito == null) writeResumen(opcion)
