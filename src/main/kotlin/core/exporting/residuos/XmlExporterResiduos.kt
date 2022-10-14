@@ -1,10 +1,10 @@
 package core.exporting.residuos
 
 import aliases.Residuos
+import core.formats.IXmlExporter
 import dto.ResiduoDto
 import kotlinx.serialization.encodeToString
 import nl.adaptivity.xmlutil.serialization.XML
-import core.formats.IXmlExporter
 import java.io.OutputStream
 
 class XmlExporterResiduos(

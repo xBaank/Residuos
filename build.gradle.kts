@@ -37,6 +37,8 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.0")
     //logback
     implementation("ch.qos.logback:logback-classic:1.4.3")
+    //coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
 }
 

@@ -2,6 +2,8 @@ package readers
 
 import aliases.CsvSequenceImporter
 import extensions.firstLine
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class CsvDirectoryReader<T>(val path: String, val parser: CsvSequenceImporter<T>) {
@@ -22,5 +24,5 @@ class CsvDirectoryReader<T>(val path: String, val parser: CsvSequenceImporter<T>
         fileReader = FileReader(file.first.path, parser)
     }
 
-    fun read(): Sequence<T> = fileReader.read()
+    suspend fun read(): Sequence<T> = withContext(Dispatchers.IO) { fileReader.read() }
 }

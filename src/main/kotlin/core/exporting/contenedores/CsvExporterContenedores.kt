@@ -1,7 +1,7 @@
 package core.exporting.contenedores
 
-import dto.ContenedorDto
 import core.formats.contenedores.ICsvExporterContenedores
+import dto.ContenedorDto
 import java.io.OutputStream
 
 
@@ -22,7 +22,6 @@ class CsvExporterContenedores : ICsvExporterContenedores {
                         "${contenedores.latitud};${contenedores.direccion}"
 
             }.forEach { appendLine(it) }
-
             flush()
         }
 }

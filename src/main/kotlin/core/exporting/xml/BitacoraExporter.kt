@@ -1,8 +1,8 @@
 package core.exporting.xml
 
+import core.formats.IXmlExporter
 import models.Bitacora
 import nl.adaptivity.xmlutil.serialization.XML
-import core.formats.IXmlExporter
 import java.io.OutputStream
 
 

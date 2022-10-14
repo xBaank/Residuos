@@ -1,10 +1,11 @@
 package writers
 
 import core.IExporter
-import utils.awaitAll
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import java.io.File
 import java.io.File.separator
-import java.util.function.Supplier
 
 class DirectoryWriter<T>(
     val path: String,
@@ -33,5 +34,5 @@ class DirectoryWriter<T>(
         return name
     }
 
-    fun write(content: T) = awaitAll(*fileWriters.map { Supplier { it.write(content) } }.toTypedArray())
+    suspend fun write(content: T) = coroutineScope { fileWriters.map { async { it.write(content) } }.awaitAll() }
 }

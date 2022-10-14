@@ -1,5 +1,7 @@
 package core.exporting.html
 
+import core.exporting.html.Html.titleInfo
+import core.formats.IHtmlExporter
 import dto.*
 import extensions.exportToHtml
 import extensions.toHtmlFormatted
@@ -11,7 +13,6 @@ import org.jetbrains.kotlinx.dataframe.api.*
 import org.jetbrains.letsPlot.geom.geomBar
 import org.jetbrains.letsPlot.label.ggtitle
 import org.jetbrains.letsPlot.letsPlot
-import core.formats.IHtmlExporter
 import java.io.OutputStream
 import java.time.Duration
 import java.time.Instant
@@ -23,7 +24,15 @@ class HtmlExporter : IHtmlExporter<Consulta> {
         val residuosDf = input.residuos.toList().toDataFrame()
         val contenedoresDf = input.contenedores.toList().toDataFrame()
         val start = Instant.now()
+        writeHtml(outputStream, contenedoresDf, residuosDf, start)
+    }
 
+    private fun writeHtml(
+        outputStream: OutputStream,
+        contenedoresDf: DataFrame<ContenedorDto>,
+        residuosDf: DataFrame<ResiduoDto>,
+        start: Instant?,
+    ) =
         outputStream.bufferedWriter().appendHTML().html {
             head {
                 title { +"Resumen de recogidas de basura y reciclaje de Madrid" }
@@ -74,7 +83,6 @@ class HtmlExporter : IHtmlExporter<Consulta> {
                 }
             }
         }.flush()
-    }
 
     private fun DIV.consulta1(list: DataFrame<ContenedorDto>) {
         val distritos = list.groupBy { distrito }
@@ -221,13 +229,6 @@ class HtmlExporter : IHtmlExporter<Consulta> {
                 div("card-header") { +distritoGrouped.key.nombreDistrito }
                 div("card-body mx-auto") { unsafe { +html } }
             }
-        }
-    }
-
-    private fun DIV.titleInfo(title: String) {
-        div("alert alert-primary mt-5") {
-            attributes["role"] = "alert"
-            h4("alert-heading") { +title }
         }
     }
 }
