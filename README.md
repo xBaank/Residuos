@@ -25,6 +25,8 @@ CLI para la importacion y exportacion de datos de residuos y contenedores en dif
 
 ```bash 
 java -jar Contenedores.jar parser ./ ./Formatos
+java -jar Contenedores.jar resumen ./ ./Formatos
+java -jar Contenedores.jar resumen centro ./ ./Formatos
 ```
 
 ## Video
