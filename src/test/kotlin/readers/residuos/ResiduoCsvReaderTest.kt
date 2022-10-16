@@ -1,10 +1,10 @@
 package readers.residuos
 
+import exceptions.ImportException
 import extensions.toResiduo
+import importing.residuos.CsvImporterResiduos
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import core.exceptions.ImportException
-import core.importing.residuos.CsvImporterResiduos
 import readers.FileReader
 import java.io.FileNotFoundException
 import java.time.LocalDate

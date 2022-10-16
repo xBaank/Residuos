@@ -1,9 +1,9 @@
 package readers.residuos
 
 import extensions.toResiduo
+import importing.residuos.XmlImporterResiduos
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import core.importing.residuos.XmlImporterResiduos
 import readers.FileReader
 import java.io.FileNotFoundException
 

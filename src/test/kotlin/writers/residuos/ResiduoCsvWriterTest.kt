@@ -1,9 +1,9 @@
 package writers.residuos
 
 import extensions.toResiduoDto
+import importing.residuos.CsvImporterResiduos
 import models.Residuo
 import org.junit.jupiter.api.Test
-import core.importing.residuos.CsvImporterResiduos
 import writers.FileWriter
 import java.io.File
 import java.time.LocalDate

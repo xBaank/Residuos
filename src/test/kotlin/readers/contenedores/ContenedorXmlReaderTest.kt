@@ -1,9 +1,9 @@
 package readers.contenedores
 
 import extensions.toContenedor
+import importing.contenedores.XmlImporterContenedores
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import core.importing.contenedores.XmlImporterContenedores
 import readers.FileReader
 import java.io.FileNotFoundException
 

@@ -2,12 +2,12 @@ package writers.contenedores
 
 import dto.ContenedorDto
 import extensions.toContenedorDto
+import importing.contenedores.JsonImporterContenedores
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import models.Contenedor
 import models.TipoContenedor
 import org.junit.jupiter.api.Test
-import core.importing.contenedores.JsonImporterContenedores
 import writers.FileWriter
 import java.io.File
 

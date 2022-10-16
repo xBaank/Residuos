@@ -2,11 +2,11 @@ package writers.residuos
 
 import dto.ResiduoDto
 import extensions.toResiduoDto
+import importing.residuos.JsonImporterResiduos
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import models.Residuo
 import org.junit.jupiter.api.Test
-import core.importing.residuos.JsonImporterResiduos
 import writers.FileWriter
 import java.io.File
 import java.time.LocalDate
