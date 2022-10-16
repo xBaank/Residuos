@@ -29,9 +29,15 @@ java -jar Contenedores.jar resumen ./ ./Formatos
 java -jar Contenedores.jar resumen centro ./ ./Formatos
 ```
 
-## Video
+## Capturas
 
-[![Video](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+![image](.assets/cmd.png)
+![image](.assets/html.png)
+![image](.assets/html2.png)
+![image](.assets/html3.png)
+
+
+
 
 
 
