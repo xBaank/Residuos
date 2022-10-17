@@ -14,7 +14,7 @@ class ArgsParser(private var params: Array<String>) {
     init {
         if (params.isEmpty())
             throw ArgsException(
-                "No se han introducido parámetros, $correctFormat"
+                "No se han introducido parámetros $correctFormat $optionalArguments"
             )
     }
 

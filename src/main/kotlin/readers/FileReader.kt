@@ -18,7 +18,7 @@ class FileReader<T>(override val path: String, private val parser: SequenceImpor
         sequence {
             file
                 .apply { if (isDirectory) throw FileException("El archivo origen no puede ser un directorio") }
-                .apply { if (!exists()) throw FileException("Archivo no encontrado") }
+                .apply { if (!exists()) throw FileException("Archivo $name no encontrado") }
                 .inputStream()
                 .use { yieldAll(parser.import(it)) }
         }
