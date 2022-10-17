@@ -1,7 +1,8 @@
 package extensions
 
-import loggers.LoggerCsvDirectoryReader
+import loggers.LoggerReader
 import mu.KLogger
-import readers.CsvDirectoryReader
+import readers.IReader
 
-infix fun <T> CsvDirectoryReader<T>.loggedWith(logger: KLogger) = LoggerCsvDirectoryReader(this, logger)
+infix fun <T> IReader<Sequence<T>>.loggedWith(logger: KLogger?) =
+    if (logger != null) LoggerReader(this, logger) else this

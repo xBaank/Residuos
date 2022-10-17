@@ -1,11 +1,16 @@
 package args
 
 import exceptions.ArgsException
+import extensions.getArgument
+import extensions.removeArguments
 
-private const val correctFormat =
-    "debe ser: parser <directorioOrigen> <directorioDestino> o resumen <directorioOrigen> <directorioDestino> o resumen <distrito> <directorioOrigen> <directorioDestino>"
+private const val correctFormat = """
 
-class ArgsParser(private val params: Array<String>) {
+FORMATO CORRECTO: 
+parser <directorioOrigen> <directorioDestino> o resumen <directorioOrigen> <directorioDestino> o resumen <distrito> <directorioOrigen> <directorioDestino>
+"""
+
+class ArgsParser(private var params: Array<String>) {
     init {
         if (params.isEmpty())
             throw ArgsException(
@@ -13,11 +18,18 @@ class ArgsParser(private val params: Array<String>) {
             )
     }
 
-    fun parse(): Opcion = when (params.first().lowercase()) {
-        "parser" -> OpcionParser(params)
-        "resumen" -> OpcionResumen(params)
-        else -> throw ArgsException(
-            "Los argumentos ${params.joinToString(" ")} no son validos, $correctFormat"
-        )
+    fun parse(): Opcion {
+
+        val residuosFile = params.getArgument("-residuos=")
+        val contenedoresFile = params.getArgument("-contenedores=")
+        params = params.removeArguments("-residuos=", "-contenedores=")
+
+        return when (params.first().lowercase()) {
+            "parser" -> OpcionParser(params, residuosFile, contenedoresFile)
+            "resumen" -> OpcionResumen(params, residuosFile, contenedoresFile)
+            else -> throw ArgsException(
+                "Formato incorrecto $correctFormat $optionalArguments"
+            )
+        }
     }
 }

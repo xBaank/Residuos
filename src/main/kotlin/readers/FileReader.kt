@@ -6,8 +6,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class FileReader<T>(path: String, private val parser: SequenceImporter<T>) : IReader<Sequence<T>> {
+class FileReader<T>(override val path: String, private val parser: SequenceImporter<T>) : IReader<Sequence<T>> {
     private val file = File(path)
+    override val formats: List<String>
+        get() = listOf(parser.extension)
+    override val name: String
+        get() = file.name
 
     //Change context, so we don't block other threads, like ui
     override suspend fun read(): Sequence<T> = withContext(Dispatchers.IO) {

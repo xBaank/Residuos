@@ -1,7 +1,7 @@
 package extensions
 
-import loggers.LoggerDirectoryWritter
+import loggers.LoggerWritter
 import mu.KLogger
-import writers.DirectoryWriter
+import writers.IWriter
 
-infix fun <T> DirectoryWriter<T>.loggedWith(logger: KLogger) = LoggerDirectoryWritter(this, logger)
+infix fun <T> IWriter<T>.loggedWith(logger: KLogger?) = if (logger != null) LoggerWritter(this, logger) else this

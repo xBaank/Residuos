@@ -9,9 +9,9 @@ import java.io.File
 import java.io.File.separator
 
 class DirectoryWriter<T>(
-    val path: String,
-    val fileName: String,
-    vararg val exporters: IExporter<T>,
+    override val path: String,
+    private val fileName: String,
+    private vararg val exporters: IExporter<T>,
 ) : IWriter<T> {
     private val fileWriters = mutableListOf<FileWriter<T>>()
 
@@ -38,4 +38,10 @@ class DirectoryWriter<T>(
     override suspend fun write(content: T) {
         coroutineScope { fileWriters.map { async { it.write(content) } }.awaitAll() }
     }
+
+    override val formats: List<String>
+        get() = exporters.map { it.extension }
+
+    override val name: String
+        get() = fileName
 }

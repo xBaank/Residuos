@@ -3,10 +3,18 @@ package args
 import exceptions.ArgsException
 
 
-private const val correctFormat =
-    "debe ser: resumen <directorioOrigen> <directorioDestino> o resumen <distrito> <directorioOrigen> <directorioDestino>"
+private const val correctFormat = """
 
-class OpcionResumen(params: Array<String>) : Opcion {
+FORMATO CORRECTO:
+resumen <directorioOrigen> <directorioDestino> o resumen <distrito> <directorioOrigen> <directorioDestino>
+"""
+
+
+class OpcionResumen(
+    params: Array<String>,
+    override val residuosFile: String?,
+    override val contenedoresFile: String?,
+) : Opcion {
 
     override fun toString(): String = "Resumen ${if (distrito == null) "global" else "$distrito"}"
 
@@ -38,7 +46,7 @@ class OpcionResumen(params: Array<String>) : Opcion {
             }
 
             else -> throw ArgsException(
-                "Formato incorrecto para la opción resumen, $correctFormat"
+                "Formato incorrecto para la opción resumen $correctFormat $optionalArguments"
             )
         }
     }
