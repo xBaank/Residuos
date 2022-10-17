@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class FileReader<T>(path: String, private val parser: SequenceImporter<T>) : IReader<T> {
+class FileReader<T>(path: String, private val parser: SequenceImporter<T>) : IReader<Sequence<T>> {
     private val file = File(path)
 
     //Change context, so we don't block other threads, like ui

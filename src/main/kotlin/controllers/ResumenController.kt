@@ -1,7 +1,7 @@
 package controllers
 
-import dto.ContenedorDto
-import dto.ResiduoDto
+import aliases.Contenedores
+import aliases.Residuos
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import models.Consulta
@@ -10,8 +10,8 @@ import writers.IWriter
 
 class ResumenController(
     private val writer: IWriter<Consulta>,
-    private val residuosReader: IReader<ResiduoDto>,
-    private val contenedoresReader: IReader<ContenedorDto>,
+    private val residuosReader: IReader<Residuos>,
+    private val contenedoresReader: IReader<Contenedores>,
 ) : IController {
     override suspend fun process() = coroutineScope {
         val residuosFuture =

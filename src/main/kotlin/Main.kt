@@ -41,7 +41,9 @@ fun main(args: Array<String>): Unit = runBlocking {
             }
         }
 
-        createBitacoraController(opcion, controller).process()
+        controller
+            .withBitacora(opcion)
+            .process()
 
     }.onSuccess {
         logger.info { "Proceso finalizado correctamente" }
@@ -57,7 +59,7 @@ fun main(args: Array<String>): Unit = runBlocking {
     }
 }
 
-fun createBitacoraController(opcion: Opcion, controller: IController) =
+infix fun IController.withBitacora(opcion: Opcion) =
     BitacoraController(
         DirectoryWriter(
             opcion.directorioDestino,
@@ -65,7 +67,7 @@ fun createBitacoraController(opcion: Opcion, controller: IController) =
             BitacoraExporter()
         ) loggedWith logger,
         opcion,
-        controller
+        this
     )
 
 fun createParseController(opcion: OpcionParser) = ParserController(
