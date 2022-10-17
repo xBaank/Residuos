@@ -6,10 +6,7 @@ import controllers.BitacoraController
 import controllers.IController
 import controllers.ParserController
 import controllers.ResumenController
-import exceptions.ArgsException
-import exceptions.ExportException
-import exceptions.FileException
-import exceptions.ImportException
+import exceptions.ResiduosException
 import exporting.contenedores.CsvExporterContenedores
 import exporting.contenedores.JsonExporterContenedores
 import exporting.contenedores.XmlExporterContenedores
@@ -49,11 +46,7 @@ fun main(args: Array<String>): Unit = runBlocking {
         logger.info { "Proceso finalizado correctamente" }
     }.onFailure {
         when (it) {
-            //For args and file exceptions we don't log the stacktrace
-            is ArgsException -> logger.error(it.message)
-            is FileException -> logger.error(it.message)
-            is ImportException -> logger.error(it.message)
-            is ExportException -> logger.error(it.message)
+            is ResiduosException -> logger.error(it.message)
             else -> logger.error(it) { it.message }
         }
     }

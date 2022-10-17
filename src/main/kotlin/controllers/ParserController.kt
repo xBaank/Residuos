@@ -4,6 +4,7 @@ import aliases.Contenedores
 import aliases.Residuos
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import readers.IReader
 import writers.IWriter
@@ -22,7 +23,9 @@ class ParserController(
             async { contenedoresReader.read() }
 
         //write async
-        launch { residuosWriter.write(residuosFuture.await()) }
-        launch { contenedoresWriter.write(contenedoresFuture.await()) }
+        val residuosWriterFuture = launch { residuosWriter.write(residuosFuture.await()) }
+        val contenedoresWriterFuture = launch { contenedoresWriter.write(contenedoresFuture.await()) }
+
+        joinAll(residuosWriterFuture, contenedoresWriterFuture)
     }
 }

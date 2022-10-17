@@ -21,8 +21,8 @@ class DirectoryWriter<T>(
             .apply { (isDirectory || mkdirs()) || throw FileException("No se pudo crear el directorio destino") }
             .path
 
-        exporters.forEach { parser ->
-            val fileWriter = FileWriter("$correctPath$separator${createName(extension = parser.extension)}", parser)
+        exporters.forEach { exporter ->
+            val fileWriter = FileWriter("$correctPath$separator${createName(extension = exporter.extension)}", exporter)
             fileWriters.add(fileWriter)
         }
     }

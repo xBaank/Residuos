@@ -1,3 +1,3 @@
 package exceptions
 
-class FileException(message: String) : Exception(message)
+class FileException(message: String) : ResiduosException(message)

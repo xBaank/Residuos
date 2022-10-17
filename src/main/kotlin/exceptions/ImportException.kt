@@ -1,3 +1,3 @@
 package exceptions
 
-class ImportException(string: String) : Exception(string)
+class ImportException(string: String) : ResiduosException(string)
