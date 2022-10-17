@@ -5,7 +5,7 @@ import exceptions.FileException
 import extensions.firstLine
 import java.io.File
 
-class CsvDirectoryReader<T>(val path: String, val parser: CsvSequenceImporter<T>) {
+class CsvDirectoryReader<T>(val path: String, val parser: CsvSequenceImporter<T>) : IReader<T> {
 
     private val fileReader: FileReader<T>
 
@@ -23,5 +23,5 @@ class CsvDirectoryReader<T>(val path: String, val parser: CsvSequenceImporter<T>
         fileReader = FileReader(file.first.path, parser)
     }
 
-    suspend fun read(): Sequence<T> = fileReader.read()
+    override suspend fun read(): Sequence<T> = fileReader.read()
 }

@@ -1,13 +1,14 @@
 package exporting.html
 
 import dto.*
+import exceptions.ExportException
 import exporting.html.Html.titleInfo
 import extensions.exportToHtml
 import extensions.toHtmlFormatted
 import formats.IHtmlExporter
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
-import models.ConsultaDistrito
+import models.Consulta
 import org.apache.commons.lang3.StringUtils
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.*
@@ -21,18 +22,25 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
-class HtmlDistritoExporter : IHtmlExporter<ConsultaDistrito> {
-    override fun export(input: ConsultaDistrito, outputStream: OutputStream) {
-        val residuosDf = input.residuos.toList().toDataFrame()
-        val contenedoresDf = input.contenedores.toList().toDataFrame()
+class HtmlDistritoExporter(private var distritoNombre: String) : IHtmlExporter<Consulta> {
+
+    init {
+        distritoNombre = distritoNombre.clear
+    }
+
+    override fun export(input: Consulta, outputStream: OutputStream) {
+        val residuosDf = input.residuos.filter { it.nombreDistrito.clear == distritoNombre }.toList().toDataFrame()
+        val contenedoresDf = input.contenedores.filter { it.distrito.clear == distritoNombre }.toList().toDataFrame()
+        if (!residuosDf.any { it.nombreDistrito.clear != distritoNombre } || !contenedoresDf.any { it.distrito.clear != distritoNombre }) {
+            throw ExportException("El distrito $distritoNombre no existe en la consulta")
+        }
         val start = Instant.now()
-        writeHtml(outputStream, contenedoresDf, input, residuosDf, start)
+        writeHtml(outputStream, contenedoresDf, residuosDf, start)
     }
 
     private fun writeHtml(
         outputStream: OutputStream,
         contenedoresDf: DataFrame<ContenedorDto>,
-        input: ConsultaDistrito,
         residuosDf: DataFrame<ResiduoDto>,
         start: Instant?,
     ) =
@@ -60,15 +68,15 @@ class HtmlDistritoExporter : IHtmlExporter<ConsultaDistrito> {
 
                 div("container-fluid d-flex flex-column align-items-center text-center justify-content-center") {
                     titleInfo("Número de contenedores de cada tipo que hay en este distrito")
-                    consulta1(contenedoresDf, input.distrito)
+                    consulta1(contenedoresDf)
                     titleInfo("Total de toneladas recogidas por residuo en este distrito")
-                    consulta2(residuosDf, input.distrito)
+                    consulta2(residuosDf)
                     titleInfo("Gráfico con el total de toneladas por residuo en este distrito")
-                    consulta3(residuosDf, input.distrito)
+                    consulta3(residuosDf)
                     titleInfo("Máximo, mínimo , media y desviación por mes por residuo en dicho distrito")
-                    consulta4(residuosDf, input.distrito)
+                    consulta4(residuosDf)
                     titleInfo("Gráfica del máximo, mínimo y media por meses en dicho distrito")
-                    consulta5(residuosDf, input.distrito)
+                    consulta5(residuosDf)
                 }
 
 
@@ -81,41 +89,33 @@ class HtmlDistritoExporter : IHtmlExporter<ConsultaDistrito> {
             }
         }.flush()
 
-    private fun DIV.consulta1(list: DataFrame<ContenedorDto>, distrito: String) {
-        val distritos = list
-            .filter { distrito.clear == distrito }
-
-        val html = distritos.groupBy { tipoContenedor }.aggregate { tipoContenedorGroup ->
+    private fun DIV.consulta1(list: DataFrame<ContenedorDto>) {
+        val html = list.groupBy { tipoContenedor }.aggregate { tipoContenedorGroup ->
             tipoContenedorGroup.sumOf { cantidadContenedores } into "cantidad contenedores"
         }.toHtmlFormatted()
 
         div("card card border-info m-5 w-50") {
-            div("card-header") { +distrito }
+            div("card-header") { +distritoNombre }
             div("card-body mx-auto") { unsafe { +html } }
         }
     }
 
     //Solo Dios sabe que hay que hacer aqui
-    private fun DIV.consulta2(list: DataFrame<ResiduoDto>, distrito: String) {
-        val distritos = list
-            .filter { nombreDistrito.clear == distrito }
+    private fun DIV.consulta2(list: DataFrame<ResiduoDto>) {
 
-        val html = distritos.groupBy { residuo }.aggregate { tipoContenedorGroup ->
+        val html = list.groupBy { residuo }.aggregate { tipoContenedorGroup ->
             tipoContenedorGroup.sumOf { toneladas } into "total toneladas"
         }.toHtmlFormatted()
 
         div("card card border-info m-5 w-50") {
-            div("card-header") { +distrito }
+            div("card-header") { +distritoNombre }
             div("card-body mx-auto") { unsafe { +html } }
         }
     }
 
-    private fun DIV.consulta3(contenedores: DataFrame<ResiduoDto>, distrito: String) {
+    private fun DIV.consulta3(list: DataFrame<ResiduoDto>) {
         //Agrupamos por distrito, mapeamos cada distrito a su suma de contenedores y luego los añadimos la cantidad de contenedores que tenga
-        val distritos = contenedores
-            .filter { nombreDistrito.clear == distrito }
-
-        val distritosToToneladas = distritos.groupBy { residuo }.aggregate {
+        val distritosToToneladas = list.groupBy { residuo }.aggregate {
             sum { toneladas } into "total toneladas"
         }.toMap()
 
@@ -123,19 +123,16 @@ class HtmlDistritoExporter : IHtmlExporter<ConsultaDistrito> {
                 geomBar(stat = Stat.identity, color = "dark_green", alpha = .3) {
                     x = "Residuo"; y = "total toneladas"
                 } +
-                ggtitle("Gráfico de suma de toneladas por residuo en $distrito")
+                ggtitle("Gráfico de suma de toneladas por residuo en $distritoNombre")
 
         div("card card border-info m-5 w-50") {
-            div("card-header") { +distrito }
+            div("card-header") { +distritoNombre }
             div("card-body mx-auto") { unsafe { +p.exportToHtml() } }
         }
     }
 
-    private fun DIV.consulta4(residuos: DataFrame<ResiduoDto>, distrito: String) {
-        val distritos = residuos
-            .filter { nombreDistrito.clear == distrito }
-
-        distritos.groupBy { mes }.forEach {
+    private fun DIV.consulta4(list: DataFrame<ResiduoDto>) {
+        list.groupBy { mes }.forEach {
             val html = it.group.groupBy { residuo }.aggregate {
                 mean { toneladas } into "media"
                 min { toneladas } into "minimo"
@@ -144,18 +141,15 @@ class HtmlDistritoExporter : IHtmlExporter<ConsultaDistrito> {
             }.toHtmlFormatted()
 
             div("card card border-info m-5 w-50") {
-                div("card-header") { +"$distrito ${it.key.mes.uppercase()}" }
+                div("card-header") { +"$distritoNombre ${it.key.mes.uppercase()}" }
                 div("card-body mx-auto") { unsafe { +html } }
             }
 
         }
     }
 
-    private fun DIV.consulta5(residuos: DataFrame<ResiduoDto>, distrito: String) {
-        val distritos = residuos
-            .filter { nombreDistrito.clear == distrito }
-
-        val distritosToToneladas = distritos.groupBy { mes }.aggregate {
+    private fun DIV.consulta5(list: DataFrame<ResiduoDto>) {
+        val distritosToToneladas = list.groupBy { mes }.aggregate {
             mean { toneladas } into "media"
             max { toneladas } into "maximo"
             min { toneladas } into "minimo"
@@ -163,27 +157,27 @@ class HtmlDistritoExporter : IHtmlExporter<ConsultaDistrito> {
 
         val p = letsPlot(distritosToToneladas) +
                 geomBar(stat = Stat.identity, color = "dark_green", alpha = .3) { x = "Mes"; y = "maximo" } +
-                ggtitle("Gráfico de media de toneladas mensuales de recogida de basura en $distrito")
+                ggtitle("Gráfico de maximo de toneladas mensuales de recogida de basura en $distritoNombre")
 
         div("card card border-info m-5 w-50") {
-            div("card-header") { +distrito }
+            div("card-header") { +distritoNombre }
             div("card-body mx-auto") { unsafe { +p.exportToHtml() } }
         }
         val p2 = letsPlot(distritosToToneladas) +
                 geomBar(stat = Stat.identity, color = "dark_green", alpha = .3) { x = "Mes"; y = "minimo" } +
-                ggtitle("Gráfico de media de toneladas mensuales de recogida de basura en $distrito")
+                ggtitle("Gráfico de minimo de toneladas mensuales de recogida de basura en $distritoNombre")
 
         div("card card border-info m-5 w-50") {
-            div("card-header") { +distrito }
+            div("card-header") { +distritoNombre }
             div("card-body mx-auto") { unsafe { +p2.exportToHtml() } }
         }
 
         val p3 = letsPlot(distritosToToneladas) +
                 geomBar(stat = Stat.identity, color = "dark_green", alpha = .3) { x = "Mes"; y = "media" } +
-                ggtitle("Gráfico de media de toneladas mensuales de recogida de basura en $distrito")
+                ggtitle("Gráfico de media de toneladas mensuales de recogida de basura en $distritoNombre")
 
         div("card card border-info m-5 w-50") {
-            div("card-header") { +distrito }
+            div("card-header") { +distritoNombre }
             div("card-body mx-auto") { unsafe { +p3.exportToHtml() } }
         }
 
