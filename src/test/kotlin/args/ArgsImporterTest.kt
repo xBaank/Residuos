@@ -36,13 +36,11 @@ internal class ArgsImporterTest {
 
     @Test
     fun shouldNotParseEmptyArgs() {
-        val ex = assertThrows<ArgsException> { ArgsParser(emptyArray()).parse() }
-        assert(ex.message == "No se han introducido parámetros")
+        assertThrows<ArgsException> { ArgsParser(emptyArray()).parse() }
     }
 
     @Test
     fun shouldNotParseUnknowOption() {
-        val ex = assertThrows<ArgsException> { ArgsParser("asd".split(' ').toTypedArray()).parse() }
-        assert(ex.message == "La opción no es válida")
+        assertThrows<ArgsException> { ArgsParser("asd".split(' ').toTypedArray()).parse() }
     }
 }

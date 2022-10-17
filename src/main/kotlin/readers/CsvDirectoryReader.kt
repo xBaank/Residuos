@@ -1,11 +1,12 @@
 package readers
 
-import aliases.CsvSequenceImporter
 import exceptions.FileException
 import extensions.firstLine
+import formats.ICsvImporter
 import java.io.File
 
-class CsvDirectoryReader<T>(override val path: String, private val parser: CsvSequenceImporter<T>) :
+//Lee autimaticamente el archivo csv que contenga la primera linea de csv importer
+class CsvDirectoryReader<T>(override val path: String, private val parser: ICsvImporter<Sequence<T>>) :
     IReader<Sequence<T>> {
 
     private val fileReader: FileReader<T>
