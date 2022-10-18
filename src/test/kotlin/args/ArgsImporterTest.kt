@@ -7,7 +7,7 @@ import org.junit.jupiter.api.assertThrows
 internal class ArgsImporterTest {
 
     @Test
-    fun shouldParseOpcionParser() {
+    fun `should parse opcion parser`() {
         val options = ArgsParser("parser a b".split(' ').toTypedArray()).parse()
         assert(options is OpcionParser)
         options as OpcionParser
@@ -16,7 +16,7 @@ internal class ArgsImporterTest {
     }
 
     @Test
-    fun shouldParseOpcionResumen() {
+    fun `should parser opcion resumen`() {
         val options = ArgsParser("resumen a b".split(' ').toTypedArray()).parse()
         assert(options is OpcionResumen)
         options as OpcionResumen
@@ -25,7 +25,7 @@ internal class ArgsImporterTest {
     }
 
     @Test
-    fun shouldParseOpcionResumenWithDistrito() {
+    fun `should parse opcion resumen with distrito`() {
         val options = ArgsParser("resumen madrid a b".split(' ').toTypedArray()).parse()
         assert(options is OpcionResumen)
         options as OpcionResumen
@@ -35,7 +35,7 @@ internal class ArgsImporterTest {
     }
 
     @Test
-    fun shouldNotParseEmptyArgs() {
+    fun `should not parse empty parameters`() {
         assertThrows<ArgsException> { ArgsParser(emptyArray()).parse() }
     }
 
