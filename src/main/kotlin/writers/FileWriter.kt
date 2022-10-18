@@ -5,7 +5,7 @@ import exporting.IExporter
 import java.io.File
 import java.nio.file.Files
 
-internal class FileWriter<T>(override val path: String, private val parser: IExporter<T>) : IWriter<T> {
+internal class FileWriter<T>(override val path: String, private val parser: IExporter<T>) : IFileWriter<T> {
     private val file = File(path)
 
     //Change context, so we don't block other threads, like ui

@@ -2,12 +2,14 @@ package importing
 
 import java.io.InputStream
 
+/**
+ * Interfaz para importar datos desde un stream, puede ser un archivo o un recurso de red
+ */
 interface IImporter<out T> {
     val extension: String
 
     /**
-     * Read from an input stream and return a type
-     * *NOTE* It's the caller responsibility to close the input stream
+     * *NOTE* Es responsabilidad del llamador cerrar el stream
      */
     fun import(input: InputStream): T
 

@@ -154,7 +154,7 @@ class HtmlExporter : IHtmlExporter<Consulta> {
 
             val p = letsPlot(data) +
                     geomBar(stat = Stat.identity, color = "dark_green", alpha = .3) {
-                        x = "Meses"; y = "media"
+                        x = "Mes"; y = "media"
                     } +
                     ggtitle("Gráfico de media de toneladas mensuales de recogida de basura en ${distritoGroup.key.nombreDistrito}")
             distritoCard(distritoGroup.key.nombreDistrito) { p.exportToHtml() }

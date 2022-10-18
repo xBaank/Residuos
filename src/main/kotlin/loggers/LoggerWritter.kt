@@ -1,9 +1,9 @@
 package loggers
 
 import mu.KLogger
-import writers.IWriter
+import writers.IFileWriter
 
-class LoggerWritter<T>(private val writer: IWriter<T>, private val logger: KLogger) : IWriter<T> {
+class LoggerWritter<T>(private val writer: IFileWriter<T>, private val logger: KLogger) : IFileWriter<T> {
     override val path: String
         get() = writer.path
     override val formats: List<String>

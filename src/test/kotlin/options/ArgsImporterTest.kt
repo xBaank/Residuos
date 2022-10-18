@@ -1,14 +1,16 @@
-package args
+package options
 
+import controllers.ArgsController
 import exceptions.ArgsException
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class ArgsImporterTest {
 
     @Test
-    fun `should parse opcion parser`() {
-        val options = ArgsParser("parser a b".split(' ').toTypedArray()).parse()
+    fun `should parse opcion parser`() = runBlocking {
+        val options = ArgsController("parser a b".split(' ').toTypedArray()).process()
         assert(options is OpcionParser)
         options as OpcionParser
         assert(options.directorioOrigen == "a")
@@ -16,8 +18,8 @@ internal class ArgsImporterTest {
     }
 
     @Test
-    fun `should parser opcion resumen`() {
-        val options = ArgsParser("resumen a b".split(' ').toTypedArray()).parse()
+    fun `should parser opcion resumen`() = runBlocking {
+        val options = ArgsController("resumen a b".split(' ').toTypedArray()).process()
         assert(options is OpcionResumen)
         options as OpcionResumen
         assert(options.directorioOrigen == "a")
@@ -25,8 +27,8 @@ internal class ArgsImporterTest {
     }
 
     @Test
-    fun `should parse opcion resumen with distrito`() {
-        val options = ArgsParser("resumen madrid a b".split(' ').toTypedArray()).parse()
+    fun `should parse opcion resumen with distrito`() = runBlocking {
+        val options = ArgsController("resumen madrid a b".split(' ').toTypedArray()).process()
         assert(options is OpcionResumen)
         options as OpcionResumen
         assert(options.directorioOrigen == "a")
@@ -36,11 +38,11 @@ internal class ArgsImporterTest {
 
     @Test
     fun `should not parse empty parameters`() {
-        assertThrows<ArgsException> { ArgsParser(emptyArray()).parse() }
+        assertThrows<ArgsException> { runBlocking { ArgsController(emptyArray()).process() } }
     }
 
     @Test
     fun shouldNotParseUnknowOption() {
-        assertThrows<ArgsException> { ArgsParser("asd".split(' ').toTypedArray()).parse() }
+        assertThrows<ArgsException> { runBlocking { ArgsController("asd".split(' ').toTypedArray()).process() } }
     }
 }

@@ -4,7 +4,7 @@ import exceptions.FileException
 import importing.IImporter
 import java.io.File
 
-class FileReader<T>(override val path: String, private val parser: IImporter<Sequence<T>>) : IReader<Sequence<T>> {
+class FileReader<T>(override val path: String, private val parser: IImporter<Sequence<T>>) : IFileReader<Sequence<T>> {
     private val file = File(path)
     override val formats: List<String>
         get() = listOf(parser.extension)

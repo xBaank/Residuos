@@ -1,9 +1,9 @@
-import args.ArgsParser
-import args.OpcionParser
-import args.OpcionResumen
+import controllers.ArgsController
 import exceptions.ResiduosException
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import options.OpcionParser
+import options.OpcionResumen
 import utils.ControllerUtils.createParseController
 import utils.ControllerUtils.createResumenController
 import utils.ControllerUtils.withBitacora
@@ -11,7 +11,7 @@ import utils.ControllerUtils.withBitacora
 val logger = KotlinLogging.logger("Console")
 fun main(args: Array<String>): Unit = runBlocking {
     runCatching {
-        val opcion = ArgsParser(args).parse()
+        val opcion = ArgsController(args).process()
 
         val controller = when (opcion) {
             is OpcionParser -> createParseController(opcion, logger)

@@ -1,10 +1,10 @@
 package loggers
 
 import mu.KLogger
-import readers.IReader
+import readers.IFileReader
 
-class LoggerReader<T>(private val reader: IReader<Sequence<T>>, private val logger: KLogger) :
-    IReader<Sequence<T>> {
+class LoggerReader<T>(private val reader: IFileReader<Sequence<T>>, private val logger: KLogger) :
+    IFileReader<Sequence<T>> {
     override val path: String
         get() = reader.path
     override val formats: List<String>

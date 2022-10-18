@@ -1,19 +1,23 @@
 package controllers
 
 import aliases.Contenedores
+import aliases.IController
 import aliases.Residuos
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
-import readers.IReader
-import writers.IWriter
+import readers.IFileReader
+import writers.IFileWriter
 
+/**
+ * Controlador para la opcion parser
+ */
 class ParserController(
-    private val residuosWriter: IWriter<Residuos>,
-    private val contenedoresWriter: IWriter<Contenedores>,
-    private val residuosReader: IReader<Residuos>,
-    private val contenedoresReader: IReader<Contenedores>,
+    private val residuosWriter: IFileWriter<Residuos>,
+    private val contenedoresWriter: IFileWriter<Contenedores>,
+    private val residuosReader: IFileReader<Residuos>,
+    private val contenedoresReader: IFileReader<Contenedores>,
 ) : IController {
 
     override suspend fun process(): Unit = withContext(Dispatchers.IO) {

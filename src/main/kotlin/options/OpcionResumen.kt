@@ -1,4 +1,4 @@
-package args
+package options
 
 import exceptions.ArgsException
 

@@ -1,8 +1,5 @@
 package utils
 
-import args.Opcion
-import args.OpcionParser
-import args.OpcionResumen
 import controllers.BitacoraController
 import controllers.IController
 import controllers.ParserController
@@ -18,6 +15,9 @@ import exporting.residuos.XmlExporterResiduos
 import exporting.xml.BitacoraExporter
 import extensions.loggedWith
 import mu.KLogger
+import options.Opcion
+import options.OpcionParser
+import options.OpcionResumen
 import utils.ContenedoresReaderUtils.createContenedoresReader
 import utils.ResiduosReadersUtils.createResiduosReader
 import writers.DirectoryWriter
@@ -66,7 +66,7 @@ object ControllerUtils {
         createContenedoresReader(opcion) loggedWith logger,
     )
 
-    fun IController.withBitacora(opcion: Opcion, logger: KLogger) =
+    fun <T> IController<T>.withBitacora(opcion: Opcion, logger: KLogger) =
         BitacoraController(
             DirectoryWriter(
                 opcion.directorioDestino,

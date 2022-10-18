@@ -1,8 +1,12 @@
-package args
+package controllers
 
 import exceptions.ArgsException
 import extensions.getArgument
 import extensions.removeArguments
+import options.Opcion
+import options.OpcionParser
+import options.OpcionResumen
+import options.optionalArguments
 
 private const val correctFormat = """
 
@@ -10,7 +14,10 @@ FORMATO CORRECTO:
 parser <directorioOrigen> <directorioDestino> o resumen <directorioOrigen> <directorioDestino> o resumen <distrito> <directorioOrigen> <directorioDestino>
 """
 
-class ArgsParser(private var params: Array<String>) {
+/**
+ * Clase para parsear los argumentos de la linea de comandos
+ */
+class ArgsController(private var params: Array<String>) : IController<Opcion> {
     init {
         if (params.isEmpty())
             throw ArgsException(
@@ -18,7 +25,7 @@ class ArgsParser(private var params: Array<String>) {
             )
     }
 
-    fun parse(): Opcion {
+    override suspend fun process(): Opcion {
 
         val residuosFile = params.getArgument("-residuos=")
         val contenedoresFile = params.getArgument("-contenedores=")

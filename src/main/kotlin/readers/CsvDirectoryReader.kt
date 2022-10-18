@@ -5,9 +5,11 @@ import extensions.firstLine
 import formats.ICsvImporter
 import java.io.File
 
-//Lee autimaticamente el archivo csv que contenga la primera linea de csv importer
+/**
+ * Detecta automáticamente el archivo csv en un directorio
+ */
 class CsvDirectoryReader<T>(override val path: String, private val parser: ICsvImporter<Sequence<T>>) :
-    IReader<Sequence<T>> {
+    IFileReader<Sequence<T>> {
 
     private val fileReader: FileReader<T>
 

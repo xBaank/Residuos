@@ -1,6 +1,9 @@
 package readers
 
-interface IReader<out T> {
+/**
+ * Interfaz para leer datos de un archivo
+ */
+interface IFileReader<out T> {
     val path: String
     val formats: List<String>
     val name: String

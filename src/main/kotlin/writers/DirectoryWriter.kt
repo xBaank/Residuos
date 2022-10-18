@@ -12,7 +12,7 @@ class DirectoryWriter<T>(
     override val path: String,
     private val fileName: String,
     private vararg val exporters: IExporter<T>,
-) : IWriter<T> {
+) : IFileWriter<T> {
     private val fileWriters = mutableListOf<FileWriter<T>>()
 
     init {
