@@ -35,7 +35,7 @@ java -jar Contenedores.jar parser ./ ./Formatos
 java -jar Contenedores.jar resumen ./ ./Formatos
 java -jar Contenedores.jar resumen centro ./ ./Formatos
 
-java -jar Contenedores.jar -residuos=residuos.csv -contenedores=contenedores.json resumen centro ./ ./Formatos
+java -jar Contenedores.jar -residuos="residuos.csv" -contenedores="contenedores.json" resumen centro ./ ./Formatos
 ```
 
 ## Capturas
