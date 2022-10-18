@@ -9,5 +9,8 @@ interface IFileWriter<in T> {
     val formats: List<String>
     val name: String
 
+    /**
+     * Escribe los datos en el archivo
+     */
     suspend fun write(content: T)
 }

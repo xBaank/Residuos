@@ -12,6 +12,9 @@ import readers.FileReader
 import java.io.File
 
 object ContenedoresReaderUtils {
+    /**
+     * Crea el reader de contenedores dependiendo de la opcion
+     */
     fun createContenedoresReader(opcion: Opcion) =
         if (opcion.contenedoresFile == null) CsvDirectoryReader(
             opcion.directorioOrigen,
@@ -22,6 +25,9 @@ object ContenedoresReaderUtils {
             getImporter(opcion.contenedoresFile!!)
         )
 
+    /**
+     * Devuelve el importer de contenedores dependiendo del formato/extension del archivo
+     */
     private fun getImporter(file: String): IImporter<Contenedores> = when (val format = file.substringAfterLast('.')) {
         "csv" -> CsvImporterContenedores()
         "json" -> JsonImporterContenedores()

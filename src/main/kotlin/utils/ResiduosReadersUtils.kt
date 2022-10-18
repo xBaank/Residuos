@@ -12,6 +12,9 @@ import readers.FileReader
 import java.io.File
 
 object ResiduosReadersUtils {
+    /**
+     * Crea el reader de residuos dependiendo de la opcion
+     */
     fun createResiduosReader(opcion: Opcion) =
         //Si no se especifica el archivo, intenta autodetectar el csv
         if (opcion.residuosFile == null) CsvDirectoryReader(
@@ -23,6 +26,10 @@ object ResiduosReadersUtils {
             getImporter(opcion.residuosFile!!)
         )
 
+
+    /**
+     * Devuelve el importer de residuos dependiendo del formato/extension del archivo
+     */
     private fun getImporter(file: String): IImporter<Residuos> = when (val format = file.substringAfterLast('.')) {
         "csv" -> CsvImporterResiduos()
         "json" -> JsonImporterResiduos()

@@ -8,5 +8,8 @@ interface IFileReader<out T> {
     val formats: List<String>
     val name: String
 
+    /**
+     * Lee los datos del archivo
+     */
     suspend fun read(): T
 }

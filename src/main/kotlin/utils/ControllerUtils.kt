@@ -23,9 +23,16 @@ import utils.ResiduosReadersUtils.createResiduosReader
 import writers.DirectoryWriter
 
 object ControllerUtils {
+    /**
+     * Crea el controller de resumen dependiendo de la opcion
+     */
     fun createResumenController(opcion: OpcionResumen, logger: KLogger? = null) =
         if (opcion.distrito == null) createResumenGlobalController(opcion, logger)
         else createResumenDistritoController(opcion, logger)
+
+    /**
+     * Crea el controller de resumen de distrito con las dependencias necesarias a partir de la opcion de resumen
+     */
 
     private fun createResumenDistritoController(opcion: OpcionResumen, logger: KLogger? = null) = ResumenController(
         DirectoryWriter(
@@ -37,6 +44,10 @@ object ControllerUtils {
         createContenedoresReader(opcion) loggedWith logger,
     )
 
+    /**
+     * Crea el controller de resumen global con las dependencias necesarias a partir de la opcion de resumen
+     */
+
     private fun createResumenGlobalController(opcion: OpcionResumen, logger: KLogger? = null) = ResumenController(
         DirectoryWriter(
             opcion.directorioDestino,
@@ -46,6 +57,10 @@ object ControllerUtils {
         createResiduosReader(opcion) loggedWith logger,
         createContenedoresReader(opcion) loggedWith logger,
     )
+
+    /**
+     * Crea el controller de parser con las dependencias necesarias a partir de la opcion de parser
+     */
 
     fun createParseController(opcion: OpcionParser, logger: KLogger? = null) = ParserController(
         DirectoryWriter(
@@ -65,6 +80,10 @@ object ControllerUtils {
         createResiduosReader(opcion) loggedWith logger,
         createContenedoresReader(opcion) loggedWith logger,
     )
+
+    /**
+     * Crea el controller de bitacora con las dependencias necesarias a partir de la opcion de bitacora y un controlador de tipo T
+     */
 
     fun <T> IController<T>.withBitacora(opcion: Opcion, logger: KLogger) =
         BitacoraController(
