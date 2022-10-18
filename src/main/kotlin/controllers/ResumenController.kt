@@ -2,8 +2,9 @@ package controllers
 
 import aliases.Contenedores
 import aliases.Residuos
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import models.Consulta
 import readers.IReader
 import writers.IWriter
@@ -13,7 +14,7 @@ class ResumenController(
     private val residuosReader: IReader<Residuos>,
     private val contenedoresReader: IReader<Contenedores>,
 ) : IController {
-    override suspend fun process() = coroutineScope {
+    override suspend fun process() = withContext(Dispatchers.IO) {
         val residuosFuture =
             async { residuosReader.read() }
         val contenedoresFuture =

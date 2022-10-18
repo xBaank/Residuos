@@ -1,6 +1,8 @@
 package controllers
 
 import args.Opcion
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import models.Bitacora
 import writers.IWriter
 import java.time.Duration
@@ -12,9 +14,9 @@ import java.util.*
 class BitacoraController(
     private val writer: IWriter<Bitacora>,
     private val opcion: Opcion,
-    private val controller: IController
+    private val controller: IController,
 ) : IController {
-    override suspend fun process() {
+    override suspend fun process() = withContext(Dispatchers.IO) {
         var ex: Throwable? = null
         var hasExito = true
         val start = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
@@ -39,6 +41,6 @@ class BitacoraController(
             )
         )
 
-        throw ex ?: return
+        throw ex ?: return@withContext
     }
 }

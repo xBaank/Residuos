@@ -2,10 +2,10 @@ package controllers
 
 import aliases.Contenedores
 import aliases.Residuos
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 import readers.IReader
 import writers.IWriter
 
@@ -16,16 +16,16 @@ class ParserController(
     private val contenedoresReader: IReader<Contenedores>,
 ) : IController {
 
-    override suspend fun process(): Unit = coroutineScope {
+    override suspend fun process(): Unit = withContext(Dispatchers.IO) {
         val residuosFuture =
             async { residuosReader.read() }
         val contenedoresFuture =
             async { contenedoresReader.read() }
 
         //write async
-        val residuosWriterFuture = launch { residuosWriter.write(residuosFuture.await()) }
-        val contenedoresWriterFuture = launch { contenedoresWriter.write(contenedoresFuture.await()) }
+        val residuosWriterFuture = async { residuosWriter.write(residuosFuture.await()) }
+        val contenedoresWriterFuture = async { contenedoresWriter.write(contenedoresFuture.await()) }
 
-        joinAll(residuosWriterFuture, contenedoresWriterFuture)
+        awaitAll(residuosWriterFuture, contenedoresWriterFuture)
     }
 }

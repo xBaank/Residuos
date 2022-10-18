@@ -1,6 +1,6 @@
 package writers
 
-interface IWriter<T> {
+interface IWriter<in T> {
     val path: String
     val formats: List<String>
     val name: String

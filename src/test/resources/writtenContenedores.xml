@@ -1,3 +1,0 @@
-<ArrayList>
-  <ContenedorDto codIntSitu="1" tipoContenedor="ORGANICA" modelo="modelo" descripModelo="descripModelo" cantidadContenedores="1" lote="1" distrito="distrito" barrio="barrio" tipoVia="tipoVia" nombreVia="nombreVia" numVia="1" coordenadaX="1.0" coordenadaY="1.0" longitud="longitud" latitud="latitud" direccion="direccion"/>
-</ArrayList>

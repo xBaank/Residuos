@@ -13,7 +13,7 @@ class LoggerReader<T>(private val reader: IReader<Sequence<T>>, private val logg
         get() = reader.name
 
     override suspend fun read(): Sequence<T> {
-        logger.info("Reading from ${reader.path} file ${reader.name}")
+        logger.info("Reading from ${reader.path} files ${reader.name}")
         logger.info("   Formats: ${reader.formats}")
         return reader.read()
     }

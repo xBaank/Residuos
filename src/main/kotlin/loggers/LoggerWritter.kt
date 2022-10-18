@@ -12,7 +12,7 @@ class LoggerWritter<T>(private val writer: IWriter<T>, private val logger: KLogg
         get() = writer.name
 
     override suspend fun write(content: T) {
-        logger.info("Writing to ${writer.path} file ${writer.name}")
+        logger.info("Writing to ${writer.path} files ${writer.name}")
         logger.info("   Formats: ${writer.formats}")
         writer.write(content)
     }

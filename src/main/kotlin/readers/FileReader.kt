@@ -2,8 +2,6 @@ package readers
 
 import exceptions.FileException
 import importing.IImporter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 
 class FileReader<T>(override val path: String, private val parser: IImporter<Sequence<T>>) : IReader<Sequence<T>> {
@@ -14,14 +12,12 @@ class FileReader<T>(override val path: String, private val parser: IImporter<Seq
         get() = file.name
 
     //Change context, so we don't block other threads, like ui
-    override suspend fun read(): Sequence<T> = withContext(Dispatchers.IO) {
-        sequence {
-            file
-                .apply { if (isDirectory) throw FileException("El archivo origen no puede ser un directorio") }
-                .apply { if (!exists()) throw FileException("Archivo $name no encontrado") }
-                .inputStream()
-                .use { yieldAll(parser.import(it)) }
-        }
+    override suspend fun read(): Sequence<T> = sequence {
+        file
+            .apply { if (isDirectory) throw FileException("El archivo origen no puede ser un directorio") }
+            .apply { if (!exists()) throw FileException("Archivo $name no encontrado") }
+            .inputStream()
+            .use { yieldAll(parser.import(it)) }
     }
 }
 

@@ -1,6 +1,6 @@
 package readers
 
-interface IReader<T> {
+interface IReader<out T> {
     val path: String
     val formats: List<String>
     val name: String
