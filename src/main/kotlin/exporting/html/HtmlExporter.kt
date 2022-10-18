@@ -1,6 +1,7 @@
 package exporting.html
 
 import dto.*
+import exporting.html.Html.distritoCard
 import exporting.html.Html.titleInfo
 import extensions.exportToHtml
 import extensions.toHtmlFormatted
@@ -10,6 +11,7 @@ import kotlinx.html.stream.appendHTML
 import models.Consulta
 import org.jetbrains.kotlinx.dataframe.DataFrame
 import org.jetbrains.kotlinx.dataframe.api.*
+import org.jetbrains.letsPlot.Stat
 import org.jetbrains.letsPlot.geom.geomBar
 import org.jetbrains.letsPlot.label.ggtitle
 import org.jetbrains.letsPlot.letsPlot
@@ -92,10 +94,7 @@ class HtmlExporter : IHtmlExporter<Consulta> {
                 tipoContenedorGroup.sumOf { cantidadContenedores } into "cantidad contenedores"
             }.toHtmlFormatted()
 
-            div("card card border-info m-5 w-50") {
-                div("card-header") { +distritoGroup.key.distrito }
-                div("card-body mx-auto") { unsafe { +html } }
-            }
+            distritoCard(distritoGroup.key.distrito) { html }
         }
     }
 
@@ -108,33 +107,22 @@ class HtmlExporter : IHtmlExporter<Consulta> {
                 tipoContenedorGroup.mean { cantidadContenedores } into "media contenedores"
             }.toHtmlFormatted()
 
-            div("card card border-info m-5 w-50") {
-                div("card-header") { +distritoGroup.key.distrito }
-                div("card-body mx-auto") { unsafe { +html } }
-            }
+            distritoCard(distritoGroup.key.distrito) { html }
         }
     }
 
     private fun DIV.consulta3(contenedores: DataFrame<ContenedorDto>) {
         //Agrupamos por distrito, mapeamos cada distrito a su suma de contenedores y luego los añadimos la cantidad de contenedores que tenga
-        val distritos = contenedores.groupBy { distrito }
+        val data = contenedores.groupBy { distrito }
+            .aggregate { it.sumOf { cantidadContenedores } into "cantidad" }
+            .toMap()
 
-        val cantidadContenedores = distritos.map { distritoGroup ->
-            val list = mutableListOf<String>()
-            repeat(distritoGroup.group.sumOf { cantidadContenedores }) {
-                list.add(distritoGroup.key.distrito)
-            }
-            list
-        }.flatten()
 
-        val data = mapOf(
-            "Distritos" to cantidadContenedores
-        )
         val p = letsPlot(data) +
-                geomBar(color = "dark_green", alpha = .3) { x = "Distritos" } +
+                geomBar(stat = Stat.identity, color = "dark_green", alpha = .3) { x = "Distrito"; y = "cantidad" } +
                 ggtitle("Gráfico con el total de contenedores por distrito")
 
-        unsafe { +p.exportToHtml() }
+        distritoCard { p.exportToHtml() }
     }
 
     private fun DIV.consulta4(residuos: DataFrame<ResiduoDto>) {
@@ -148,10 +136,7 @@ class HtmlExporter : IHtmlExporter<Consulta> {
                         meanOf { toneladas } into "media toneladas anuales"
                     }.toHtmlFormatted()
 
-            div("card card border-info m-5 w-50") {
-                div("card-header") { +distritoGroup.key.nombreDistrito }
-                div("card-body mx-auto") { unsafe { +html } }
-            }
+            distritoCard(distritoGroup.key.nombreDistrito) { html }
         }
     }
 
@@ -159,77 +144,60 @@ class HtmlExporter : IHtmlExporter<Consulta> {
         val distritos = residuos
             .groupBy { nombreDistrito }
 
+        distritos.forEach { distritoGroup ->
+            val data = distritoGroup.group
+                .groupBy { mes }
+                .aggregate {
+                    meanOf { toneladas } into "media"
+                }.toMap()
 
-        distritos.forEach { distrito ->
-            val distritosToToneladas = distrito.group.groupBy { mes }.map { fechaGroup ->
-                val list = mutableListOf<String>()
-                repeat(fechaGroup.group.meanOf { toneladas }.toInt()) {
-                    list.add(fechaGroup.key.mes)
-                }
-                list
-            }.flatten()
-
-            val data = mapOf(
-                "Meses" to distritosToToneladas
-            )
 
             val p = letsPlot(data) +
-                    geomBar(color = "dark_green", alpha = .3) { x = "Meses" } +
-                    ggtitle("Gráfico de media de toneladas mensuales de recogida de basura en ${distrito.key.nombreDistrito}")
-
-            div("card card border-info m-5 w-50") {
-                div("card-header") { +distrito.key.nombreDistrito }
-                div("card-body mx-auto") { unsafe { +p.exportToHtml() } }
-            }
+                    geomBar(stat = Stat.identity, color = "dark_green", alpha = .3) {
+                        x = "Meses"; y = "media"
+                    } +
+                    ggtitle("Gráfico de media de toneladas mensuales de recogida de basura en ${distritoGroup.key.nombreDistrito}")
+            distritoCard(distritoGroup.key.nombreDistrito) { p.exportToHtml() }
         }
     }
+}
 
-    private fun DIV.consulta6(residuos: DataFrame<ResiduoDto>) {
-        val distritos = residuos.groupBy { it.nombreDistrito }
+private fun DIV.consulta6(residuos: DataFrame<ResiduoDto>) {
+    val distritos = residuos.groupBy { it.nombreDistrito }
 
-        distritos.forEach { distritoGrouped ->
-            val html = distritoGrouped.group.groupBy { residuo; ano }.aggregate {
-                max { toneladas } into "max"
-                min { toneladas } into "min"
-                mean { toneladas } into "media"
-                std { toneladas } into "desviacion"
-            }.toHtmlFormatted()
+    distritos.forEach { distritoGrouped ->
+        val html = distritoGrouped.group.groupBy { residuo; ano }.aggregate {
+            max { toneladas } into "max"
+            min { toneladas } into "min"
+            mean { toneladas } into "media"
+            std { toneladas } into "desviacion"
+        }.toHtmlFormatted()
 
-            div("card card border-info m-5 w-50") {
-                div("card-header") { +distritoGrouped.key.nombreDistrito }
-                div("card-body mx-auto") { unsafe { +html } }
-            }
-        }
+        distritoCard(distritoGrouped.key.nombreDistrito) { html }
     }
+}
 
-    private fun DIV.consulta7(residuosDf: DataFrame<ResiduoDto>) {
-        val distritos = residuosDf.groupBy { nombreDistrito }
+private fun DIV.consulta7(residuosDf: DataFrame<ResiduoDto>) {
+    val distritos = residuosDf.groupBy { nombreDistrito }
 
-        distritos.forEach { distritoGrouped ->
-            val html = distritoGrouped.group.groupBy { ano }.aggregate {
-                sumOf { toneladas } into "suma"
-            }.toHtmlFormatted()
+    distritos.forEach { distritoGrouped ->
+        val html = distritoGrouped.group.groupBy { ano }.aggregate {
+            sumOf { toneladas } into "suma"
+        }.toHtmlFormatted()
 
-            div("card card border-info m-5 w-50") {
-                div("card-header") { +distritoGrouped.key.nombreDistrito }
-                div("card-body mx-auto") { unsafe { +html } }
-            }
-        }
+        distritoCard(distritoGrouped.key.nombreDistrito) { html }
     }
+}
 
-    private fun DIV.consulta8(residuosDf: DataFrame<ResiduoDto>) {
-        val distritos = residuosDf.groupBy { nombreDistrito }
+private fun DIV.consulta8(residuosDf: DataFrame<ResiduoDto>) {
+    val distritos = residuosDf.groupBy { nombreDistrito }
 
-        distritos.forEach { distritoGrouped ->
-            val html = distritoGrouped.group.groupBy { residuo }.aggregate {
-                sumOf { toneladas } into "suma"
-            }.toHtmlFormatted()
+    distritos.forEach { distritoGrouped ->
+        val html = distritoGrouped.group.groupBy { residuo }.aggregate {
+            sumOf { toneladas } into "suma"
+        }.toHtmlFormatted()
 
-            div("card card border-info m-5 w-50") {
-                div("card-header") { +distritoGrouped.key.nombreDistrito }
-                div("card-body mx-auto") { unsafe { +html } }
-            }
-        }
+        distritoCard(distritoGrouped.key.nombreDistrito) { html }
     }
 }
 

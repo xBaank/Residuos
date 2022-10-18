@@ -2,6 +2,7 @@ package exporting.html
 
 import dto.*
 import exceptions.ExportException
+import exporting.html.Html.distritoCard
 import exporting.html.Html.titleInfo
 import extensions.exportToHtml
 import extensions.toHtmlFormatted
@@ -31,7 +32,7 @@ class HtmlDistritoExporter(private var distritoNombre: String) : IHtmlExporter<C
     override fun export(input: Consulta, outputStream: OutputStream) {
         val residuosDf = input.residuos.filter { it.nombreDistrito.clear == distritoNombre }.toList().toDataFrame()
         val contenedoresDf = input.contenedores.filter { it.distrito.clear == distritoNombre }.toList().toDataFrame()
-        if (!residuosDf.any { it.nombreDistrito.clear != distritoNombre } || !contenedoresDf.any { it.distrito.clear != distritoNombre }) {
+        if (residuosDf.isEmpty() || contenedoresDf.isEmpty()) {
             throw ExportException("El distrito $distritoNombre no existe en la consulta")
         }
         val start = Instant.now()
@@ -94,10 +95,7 @@ class HtmlDistritoExporter(private var distritoNombre: String) : IHtmlExporter<C
             tipoContenedorGroup.sumOf { cantidadContenedores } into "cantidad contenedores"
         }.toHtmlFormatted()
 
-        div("card card border-info m-5 w-50") {
-            div("card-header") { +distritoNombre }
-            div("card-body mx-auto") { unsafe { +html } }
-        }
+        distritoCard(distritoNombre) { html }
     }
 
     //Solo Dios sabe que hay que hacer aqui
@@ -107,10 +105,7 @@ class HtmlDistritoExporter(private var distritoNombre: String) : IHtmlExporter<C
             tipoContenedorGroup.sumOf { toneladas } into "total toneladas"
         }.toHtmlFormatted()
 
-        div("card card border-info m-5 w-50") {
-            div("card-header") { +distritoNombre }
-            div("card-body mx-auto") { unsafe { +html } }
-        }
+        distritoCard(distritoNombre) { html }
     }
 
     private fun DIV.consulta3(list: DataFrame<ResiduoDto>) {
@@ -125,10 +120,7 @@ class HtmlDistritoExporter(private var distritoNombre: String) : IHtmlExporter<C
                 } +
                 ggtitle("Gráfico de suma de toneladas por residuo en $distritoNombre")
 
-        div("card card border-info m-5 w-50") {
-            div("card-header") { +distritoNombre }
-            div("card-body mx-auto") { unsafe { +p.exportToHtml() } }
-        }
+        distritoCard(distritoNombre) { p.exportToHtml() }
     }
 
     private fun DIV.consulta4(list: DataFrame<ResiduoDto>) {
@@ -140,11 +132,7 @@ class HtmlDistritoExporter(private var distritoNombre: String) : IHtmlExporter<C
                 std { toneladas } into "desviacion"
             }.toHtmlFormatted()
 
-            div("card card border-info m-5 w-50") {
-                div("card-header") { +"$distritoNombre ${it.key.mes.uppercase()}" }
-                div("card-body mx-auto") { unsafe { +html } }
-            }
-
+            distritoCard("$distritoNombre ${it.key.mes.uppercase()}") { html }
         }
     }
 
@@ -159,28 +147,20 @@ class HtmlDistritoExporter(private var distritoNombre: String) : IHtmlExporter<C
                 geomBar(stat = Stat.identity, color = "dark_green", alpha = .3) { x = "Mes"; y = "maximo" } +
                 ggtitle("Gráfico de maximo de toneladas mensuales de recogida de basura en $distritoNombre")
 
-        div("card card border-info m-5 w-50") {
-            div("card-header") { +distritoNombre }
-            div("card-body mx-auto") { unsafe { +p.exportToHtml() } }
-        }
+        distritoCard(distritoNombre) { p.exportToHtml() }
+
         val p2 = letsPlot(distritosToToneladas) +
                 geomBar(stat = Stat.identity, color = "dark_green", alpha = .3) { x = "Mes"; y = "minimo" } +
                 ggtitle("Gráfico de minimo de toneladas mensuales de recogida de basura en $distritoNombre")
 
-        div("card card border-info m-5 w-50") {
-            div("card-header") { +distritoNombre }
-            div("card-body mx-auto") { unsafe { +p2.exportToHtml() } }
-        }
+        distritoCard(distritoNombre) { p2.exportToHtml() }
+
 
         val p3 = letsPlot(distritosToToneladas) +
                 geomBar(stat = Stat.identity, color = "dark_green", alpha = .3) { x = "Mes"; y = "media" } +
                 ggtitle("Gráfico de media de toneladas mensuales de recogida de basura en $distritoNombre")
 
-        div("card card border-info m-5 w-50") {
-            div("card-header") { +distritoNombre }
-            div("card-body mx-auto") { unsafe { +p3.exportToHtml() } }
-        }
-
+        distritoCard(distritoNombre) { p3.exportToHtml() }
     }
 
     private val String.clear get() = StringUtils.stripAccents(this).uppercase()
