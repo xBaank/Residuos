@@ -6,6 +6,10 @@
 
 CLI para la importacion y exportacion de datos de residuos y contenedores en diferentes formatos.
 
+## Requisitos
+
+Para la ejecución del programa se necesita tener instalado Java 17 o superior.
+
 ## Formatos
 
 - JSON
