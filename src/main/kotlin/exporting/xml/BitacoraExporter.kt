@@ -1,7 +1,7 @@
 package exporting.xml
 
+import extensions.export
 import formats.IXmlExporter
-import kotlinx.serialization.encodeToString
 import models.Bitacora
 import nl.adaptivity.xmlutil.serialization.XML
 import java.io.OutputStream
@@ -14,12 +14,5 @@ class BitacoraExporter(
     },
 ) : IXmlExporter<Bitacora> {
 
-    override fun export(input: Bitacora, outputStream: OutputStream) {
-        xml.encodeToString(input).let { string ->
-            outputStream.bufferedWriter().let {
-                it.write(string)
-                it.flush()
-            }
-        }
-    }
+    override fun export(input: Bitacora, outputStream: OutputStream) = xml.export(input, outputStream)
 }

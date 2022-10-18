@@ -2,8 +2,8 @@ package exporting.residuos
 
 import aliases.Residuos
 import dto.ResiduoDto
+import extensions.export
 import formats.IXmlExporter
-import kotlinx.serialization.encodeToString
 import nl.adaptivity.xmlutil.serialization.XML
 import java.io.OutputStream
 
@@ -14,10 +14,5 @@ class XmlExporterResiduos(
     },
 ) : IXmlExporter<Residuos> {
     override fun export(input: Sequence<ResiduoDto>, outputStream: OutputStream) =
-        xml.encodeToString(input.toList()).let { string ->
-            outputStream.bufferedWriter().let {
-                it.write(string)
-                it.flush()
-            }
-        }
+        xml.export(input.toList(), outputStream)
 }

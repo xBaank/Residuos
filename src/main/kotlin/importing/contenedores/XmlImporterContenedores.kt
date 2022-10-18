@@ -3,8 +3,8 @@ package importing.contenedores
 import aliases.Contenedores
 import dto.ContenedorDto
 import exceptions.ImportException
+import extensions.import
 import formats.IXmlImporter
-import kotlinx.serialization.decodeFromString
 import nl.adaptivity.xmlutil.serialization.XML
 import java.io.InputStream
 
@@ -16,7 +16,7 @@ class XmlImporterContenedores(
 ) : IXmlImporter<Contenedores> {
     override fun import(input: InputStream): Sequence<ContenedorDto> = sequence {
         kotlin.runCatching {
-            xml.decodeFromString<List<ContenedorDto>>(input.reader().readText()).forEach { yield(it) }
+            xml.import<ContenedorDto>(input).forEach { yield(it) }
         }.onFailure {
             throw ImportException("Error al importar los contenedores en formato xml")
         }
