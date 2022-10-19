@@ -10,6 +10,8 @@ CLI para la importacion y exportacion de datos de residuos y contenedores en dif
 
 Para la ejecución del programa se necesita tener instalado Java 17 o superior.
 
+## Enlace al video explicativo del uso de la aplicación. https://youtu.be/0ezWFfl20k0
+
 ## Formatos
 
 - JSON
